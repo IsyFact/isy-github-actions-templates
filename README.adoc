@@ -1,13 +1,14 @@
 # isy-github-actions-templates
+:toc:
 Dieses Repository beinhaltet GitHub Action Templates ([Reusable Workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows)). Diese Templates können in bereits vorhandene [Workflows](https://docs.github.com/en/actions/using-workflows/about-workflows) eingebunden werden, um ihre Funktionalität mit sehr geringem Aufwand an anderer Stelle nutzen zu können.
 
 Ein Beispiel-Szenario dazu wäre: Der [Commit Message Checker](https://github.com/GsActions/commit-message-checker) ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen. Diese Funktionalität ist nun in einigen meiner Repositories mit gewünscht, wobei der Commit Message Checker überall gleich konfiguriert sein soll. Statt die Action nun also in jedem Repository einzeln einzubinden und zu konfigurieren, erstellt man ein Template in einem Repository mit der gewünschten Konfuiguration und ruft dieses in allen anderen auf.
 
-=== Templates
+= Templates
 
 Auf dem master Branch der IsyFact Standards befinden sich wiederverwendbare Maven Workflows, welche von allen Repositories innerhalb der IsyFact Organisation verwendet werden können. Um diese Templates besser erkennen zu können, sind die nach dem Muster maven_*_template.yml benannt.
 
-==== Next-Version Template
+=== Next-Version Template
 
 Das Template next_version.yml stellt einen Job zur Berechnung der Versionsnummer eines Builds bereit.
 Dazu nutzt es die Action Semantic Version (https://github.com/PaulHatch/semantic-version),
@@ -131,9 +132,9 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 
 TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input deploy-server-id werden durch die Setup Java Github Action einer generierten settings.xml hinzugefügt (https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md)
 
-==== Verwendung der Templates
+= Verwendung der Templates
 
-==== Next-Version Template
+===== Next-Version Template
 
 [width="100%",cols="35%,35%,^30%"]
 |===
@@ -196,7 +197,7 @@ NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version ge
 
 ===== Deploy Template
 
-===== Verwendung in Build Workflows (Snapshot-Release)
+====== Verwendung in Build Workflows (Snapshot-Release)
 [width="100%",cols="25%,10%,^5%,^30%,^5%,^5%,^15%,^1%,,^1%,^2%"]
 |===
 .2+^.^|*Repository* .2+^.^|*Branch* 9+^.^|*Inputs*
@@ -226,7 +227,7 @@ In den anderen Repositories erfolgt die Konfiguration in der angegebenen setting
 
 NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version gemeint (siehe <<Next-Version Template>>).
 
-===== Verwendung in Release Workflows (Stable Release)
+====== Verwendung in Release Workflows (Stable Release)
 [width="100%",cols="25%,10%,^5%,^33%,^3%,^1%,^1%,^5%,^15%,^2%"]
 |===
 .2+^.^|*Repository* .2+^.^|*Branch* 8+^.^|*Inputs*
