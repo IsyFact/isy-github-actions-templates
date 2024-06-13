@@ -1,11 +1,11 @@
 version: 2
 updates:
   - package-ecosystem: "github-actions"
-    directory: 
+    directories: 
     - "../../maven"
     - "../../dependency management"
     - "../../quality gates"
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "ci"
+      prefix: "build"
