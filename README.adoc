@@ -1,8 +1,9 @@
 # isy-github-actions-templates
 :toc:
-Dieses Repository beinhaltet GitHub Action Templates ([Reusable Workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows)). Diese Templates können in bereits vorhandene [Workflows](https://docs.github.com/en/actions/using-workflows/about-workflows) eingebunden werden, um ihre Funktionalität mit sehr geringem Aufwand an anderer Stelle nutzen zu können.
 
-Ein Beispiel-Szenario dazu wäre: Der [Commit Message Checker](https://github.com/GsActions/commit-message-checker) ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen. Diese Funktionalität ist nun in einigen meiner Repositories mit gewünscht, wobei der Commit Message Checker überall gleich konfiguriert sein soll. Statt die Action nun also in jedem Repository einzeln einzubinden und zu konfigurieren, erstellt man ein Template in einem Repository mit der gewünschten Konfuiguration und ruft dieses in allen anderen auf.
+Dieses Repository beinhaltet GitHub Action Templates (https://docs.github.com/en/actions/using-workflows/reusing-workflows[Reusable Workflows]). Diese Templates können in bereits vorhandene https://docs.github.com/en/actions/using-workflows/about-workflows[Workflows] eingebunden werden, um ihre Funktionalität mit sehr geringem Aufwand an anderer Stelle nutzen zu können.
+
+Ein Beispiel-Szenario dazu wäre: Der https://github.com/GsActions/commit-message-checker[Commit Message Checker] ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen. Diese Funktionalität ist nun in einigen meiner Repositories mit gewünscht, wobei der Commit Message Checker überall gleich konfiguriert sein soll. Statt die Action nun also in jedem Repository einzeln einzubinden und zu konfigurieren, erstellt man ein Template in einem Repository mit der gewünschten Konfuiguration und ruft dieses in allen anderen auf.
 
 = Templates
 
@@ -39,7 +40,7 @@ wird in dem Template sichergestellt, dass das GitHub Token nur die Rechte conten
 Zudem wird die berechnete Version mit dem regulären Ausdruck ```^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$``` auf Korrektheit geprüft.
 
 
-==== Build Template
+=== Build Template
 
 Das Template maven_build_template.yml bietet einen Workflow zum Bauen und Testen von Java/Maven Projekten. Es enthält folgende Jobs:
 
@@ -74,7 +75,7 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |GH_PACKAGES_TOKEN |Nein | |Token für Zugriff auf GitHub Packages (siehe <<GitHub Packages>>)
 |===
 
-==== Dependency Scan Template
+=== Dependency Scan Template
 
 Das Template maven_depenency_scan_template.yml stellt einen Job “Monitor” bereit, welcher <<Snyk>> verwendet, um die Open Source Abhängigkeiten des Projektes kontinuierlich zu überwachen.
 
@@ -92,7 +93,7 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |SNYK_TOKEN |Ja | |Token zur Authentifizierung bei Snyk
 |===
 
-==== Deploy Template
+=== Deploy Template
 
 Das Template maven_deploy_template.yml stellt Jobs zum Veröffentlichen von Artefakten bereit.
 Es kann sowohl für die Veröffentlichung von Snapshots als auch stable Releases genutzt werden.
@@ -134,7 +135,7 @@ TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input deploy-
 
 = Verwendung der Templates
 
-===== Next-Version Template
+=== Next-Version Template
 
 [width="100%",cols="35%,35%,^30%"]
 |===
@@ -150,7 +151,7 @@ TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input deploy-
      |master |
 |===
 
-===== Build Template
+=== Build Template
 
 [width="100%",cols="21%,13%,^6%,^23%,^8%,^19%,^5%,^5%"]
 |===
@@ -174,7 +175,7 @@ NOTE: In isy-web werden einige Konfigurationsdateien über den LFS gespeichert, 
 
 NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version gemeint (siehe <<Next-Version Template>>).
 
-===== Dependency Scan Template
+=== Dependency Scan Template
 
 [width="100%",cols="15%,10%,^5%,^5%,^15 %,^20%,^25%,^5%"]
 |===
@@ -195,9 +196,9 @@ NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version ge
 * $GITHUB_REF_NAME ist eine vordefinierte Variable innerhalb von GitHub Actions und enthält den Namen des zugehörigen Branches.
 ====
 
-===== Deploy Template
+=== Deploy Template
 
-====== Verwendung in Build Workflows (Snapshot-Release)
+==== Verwendung in Build Workflows (Snapshot-Release)
 [width="100%",cols="25%,10%,^5%,^30%,^5%,^5%,^15%,^1%,,^1%,^2%"]
 |===
 .2+^.^|*Repository* .2+^.^|*Branch* 9+^.^|*Inputs*
@@ -227,7 +228,7 @@ In den anderen Repositories erfolgt die Konfiguration in der angegebenen setting
 
 NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version gemeint (siehe <<Next-Version Template>>).
 
-====== Verwendung in Release Workflows (Stable Release)
+==== Verwendung in Release Workflows (Stable Release)
 [width="100%",cols="25%,10%,^5%,^33%,^3%,^1%,^1%,^5%,^15%,^2%"]
 |===
 .2+^.^|*Repository* .2+^.^|*Branch* 8+^.^|*Inputs*
