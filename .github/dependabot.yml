@@ -3,8 +3,8 @@ updates:
   - package-ecosystem: "github-actions"
     directories: 
     - "../../maven"
-    - "../../dependency management"
-    - "../../quality gates"
+    - "../../dependency-management"
+    - "../../misc"
     schedule:
       interval: "daily"
     commit-message:
