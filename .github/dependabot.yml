@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: 
+    - "../../maven"
+    - "../../dependency management"
+    - "../../quality gates"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "ci"
