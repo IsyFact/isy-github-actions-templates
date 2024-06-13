@@ -2,7 +2,9 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directories: 
-    - "../../"
+    - "../../maven"
+    - "../../dependency management"
+    - "../../quality gates"
     schedule:
       interval: "daily"
     commit-message:
