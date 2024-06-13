@@ -51,10 +51,10 @@ Führt das Maven Goal ‚compile‘ aus.
 Führt das Maven Goal ‚test‘ aus
 
 * *CodeQuality*: +
-Führt die beiden Maven Plugins ‚checkstyle‘ und ‚spotbugs‘ aus. Der Job wird nur ausgeführt, wenn für ein Projekt Sonar (SONAR_PROJECT_KEY) nicht konfiguriert wurde (<<Erforderliche Einstellungen in GitHub>>).
+Führt die beiden Maven Plugins ‚checkstyle‘ und ‚spotbugs‘ aus. Der Job wird nur ausgeführt, wenn für ein Projekt Sonar (SONAR_PROJECT_KEY) nicht konfiguriert wurde.
 
 * *SonarScan*: +
-Führt das Maven Plugin ‚SonarScan‘ aus. Der Scan wird nach dem Job Test ausgeführt, damit dessen Ergebnisse (insb. die Test Coverage) auch auf Sonar Cloud verfügbar sind. Dieser Job ist optional und wird nur ausgeführt, wenn ein Sonar Projekt Key konfiguriert wurde (siehe <<SonarCloud>>). Dieser Job schlägt nur fehl, wenn es nicht möglich war eine Analyse durchzuführen. Die Prüfung, ob das zugehörige Quality Gate erfüllt wurde, erfolgt in Sonar Cloud und wird über einen zusätzlichen Status Check angezeigt. Zudem wird dieser Job nicht bei Pull Requests, die durch den DependaBot erstellt wurden, gestartet, da der DependaBot kein Zugriff auf das SONAR_TOKEN hat.
+Führt das Maven Plugin ‚SonarScan‘ aus. Der Scan wird nach dem Job Test ausgeführt, damit dessen Ergebnisse (insb. die Test Coverage) auch auf Sonar Cloud verfügbar sind. Dieser Job ist optional und wird nur ausgeführt, wenn ein Sonar Projekt Key konfiguriert wurde. Dieser Job schlägt nur fehl, wenn es nicht möglich war eine Analyse durchzuführen. Die Prüfung, ob das zugehörige Quality Gate erfüllt wurde, erfolgt in Sonar Cloud und wird über einen zusätzlichen Status Check angezeigt. Zudem wird dieser Job nicht bei Pull Requests, die durch den DependaBot erstellt wurden, gestartet, da der DependaBot keinen Zugriff auf das SONAR_TOKEN hat.
 
 * *Commit Message Checker*: +
 Gleicht die Commit Messages mit einem RegEx-Pattern ab und gibt eine Success bzw. Error Message aus, je nachdem, ob sie der Konvention entsprechen. Ein GitHub-Token (secrets.GITHUB_TOKEN), welches ausschließlich ein Lese-Recht auf Inhalte besitzt, wird zur Authentifizierung verwendet.
@@ -72,12 +72,12 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |sonar-skip |Nein |false |Erlaubt das Überspringen des Jobs SonarScan
 4+^|*Secrets*
 |SONAR_TOKEN |Nein | |Token zu Sonar Cloud um das Ergebnis des Scans zu veröffentlichen
-|GH_PACKAGES_TOKEN |Nein | |Token für Zugriff auf GitHub Packages (siehe <<GitHub Packages>>)
+|GH_PACKAGES_TOKEN |Nein | |Token für Zugriff auf GitHub Packages
 |===
 
 === Dependency Scan Template
 
-Das Template maven_depenency_scan_template.yml stellt einen Job “Monitor” bereit, welcher <<Snyk>> verwendet, um die Open Source Abhängigkeiten des Projektes kontinuierlich zu überwachen.
+Das Template maven_depenency_scan_template.yml stellt einen Job “Monitor” bereit, welcher Snyk verwendet, um die Open Source Abhängigkeiten des Projektes kontinuierlich zu überwachen.
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
 
@@ -128,7 +128,7 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |GPG_PASSPHRASE |Nein | |Passphrase für GPGG Key
 |DEPLOY_SERVER_USER_NAME |Nein | |Benutzer für Repository zum Deployment
 |DEPLOY_SERVER_TOKEN |Nein | |Token  oder Passwort für Repository zum Deployment
-|GH_PACKAGES_TOKEN |Nein | |Token für Zugriff auf GitHub Packages (siehe <<GitHub Packages>>)
+|GH_PACKAGES_TOKEN |Nein | |Token für Zugriff auf GitHub Packages (siehe GitHub Packages)
 |===
 
 TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input deploy-server-id werden durch die Setup Java Github Action einer generierten settings.xml hinzugefügt (https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md)
