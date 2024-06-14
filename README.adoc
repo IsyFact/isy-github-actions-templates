@@ -7,8 +7,6 @@ Ein Beispiel-Szenario dazu wäre: Der https://github.com/GsActions/commit-messag
 
 = Templates
 
-Auf dem master Branch der IsyFact Standards befinden sich wiederverwendbare Maven Workflows, welche von allen Repositories innerhalb der IsyFact Organisation verwendet werden können. Um diese Templates besser erkennen zu können, sind die nach dem Muster maven_*_template.yml benannt.
-
 === Next-Version Template
 
 Das Template next_version.yml stellt einen Job zur Berechnung der Versionsnummer eines Builds bereit.
@@ -192,7 +190,7 @@ NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version ge
 
 [TIP]
 ====
-* $SNYK_ORG_ID ist eine in den Einstellungen "Hinterlegte Variablen und Secrets" hinterlegte Variable
+* $SNYK_ORG_ID ist eine in den Einstellungen hinterlegte Variable
 * $GITHUB_REF_NAME ist eine vordefinierte Variable innerhalb von GitHub Actions und enthält den Namen des zugehörigen Branches.
 ====
 
@@ -251,7 +249,7 @@ NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version ge
 |isy-checkstyle-plugin |main |17 |-P centralRelease |false |$GITHUB_REF_NAME |ossrh |true |true |-
 |===
 
-IMPORTANT: Für die weiteren im <<Deploy Template>> aufgelisteten Secrets werden bei allen Workflows, die dieses Template verwenden, die in "Hinterlegte Variablen und Secrets" angegebenen Variablen für Maven Central und GPG entsprechend übergeben. Dies wird zugunsten der Übersichtlichkeit jedoch in obiger Tabelle ausgelassen.
+IMPORTANT: Für die weiteren im <<Deploy Template>> aufgelisteten Secrets werden bei allen Workflows, die dieses Template verwenden, die entsprechenden Variablen für Maven Central und GPG übergeben. Dies wird zugunsten der Übersichtlichkeit jedoch in obiger Tabelle ausgelassen.
 
 NOTE: Nicht erwähnte Eingabeparameter wie deploy-url-release und deploy-url-snapshot werden in den Workflows nicht gesetzt.
 
