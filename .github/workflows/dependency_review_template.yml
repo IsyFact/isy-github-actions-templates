@@ -24,6 +24,6 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          config-file: IsyFact/isy-github-actions-templates/.github/workflows/dependency_review_config.yml@feature/IFS-2835_license_management_isy_sonderzeichen
+          config-file: IsyFact/isy-github-actions-templates/.github/dependency_review_config.yml@feature/IFS-2835_license_management_isy_sonderzeichen
           base-ref: ${{ inputs.base-ref }}
           head-ref: ${{ inputs.head-ref }}
