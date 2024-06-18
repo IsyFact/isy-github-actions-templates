@@ -1,27 +1,30 @@
-# isy-github-actions-templates
+= isy-github-actions-templates
 :toc:
+
 
 Dieses Repository beinhaltet GitHub Action Templates (https://docs.github.com/en/actions/using-workflows/reusing-workflows[Reusable Workflows]). Diese Templates können in bereits vorhandene https://docs.github.com/en/actions/using-workflows/about-workflows[Workflows] eingebunden werden, um ihre Funktionalität mit sehr geringem Aufwand an anderer Stelle nutzen zu können.
 
 Ein Beispiel-Szenario dazu wäre: Der https://github.com/GsActions/commit-message-checker[Commit Message Checker] ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen. Diese Funktionalität ist nun in einigen meiner Repositories mit gewünscht, wobei der Commit Message Checker überall gleich konfiguriert sein soll. Statt die Action nun also in jedem Repository einzeln einzubinden und zu konfigurieren, erstellt man ein Template in einem Repository mit der gewünschten Konfiguration und ruft dieses in allen anderen auf.
 
-= Templates
+== Templates
 
-=== Next-Version Template
+=== Next Version Template
 
 Das Template next_version.yml stellt einen Job zur Berechnung der Versionsnummer eines Builds bereit.
-Dazu nutzt es die Action Semantic Version (https://github.com/PaulHatch/semantic-version),
+Dazu nutzt es die Action Semantic Version (https://github.com/PaulHatch/semantic-Dversion),
 welche die Version auf Basis von Conventional Commits bestimmt.
-Die berechnete Version ist als Ausgabe ```next-version``` für andere Jobs in einem Workflow verfügbar.
+Die berechnete Version ist als Ausgabe `next-version` für andere Jobs in einem Workflow verfügbar.
 
 [width="100%",cols="20%,^15%,^20%,45%",options="header",]
 |===
-^|*Eingabe* ^|*Erforderlich* ^|*Standardwert* ^|*Beschreibung*
-|next-version |Nein |  |Überspringt die Berechnung der Version und gibt stattdessen die angegebene Version mit "SNAPSHOT" Suffix aus
+^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
+|`next-version` |Nein |  |Überspringt die Berechnung der Version und gibt stattdessen die angegebene Version mit `SNAPSHOT` Suffix aus
 |===
 
-===== Verwenden der berechneten Version in anderen Jobs
-[source, yaml]
+=== Verwenden der berechneten Version in anderen Jobs
+
+[source,yaml]
+[source]
 ----
 jobs:
   Version:
@@ -35,105 +38,119 @@ jobs:
 
 NOTE: Da hier eine Action aus dem GitHub Market von einem Dritten verwendet wird,
 wird in dem Template sichergestellt, dass das GitHub Token nur die Rechte contents:read bereitstellt.
-Zudem wird die berechnete Version mit dem regulären Ausdruck ```^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$``` auf Korrektheit geprüft.
+Zudem wird die berechnete Version mit dem regulären Ausdruck `^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$` auf Korrektheit geprüft.
 
 
 === Build Template
 
 Das Template maven_build_template.yml bietet einen Workflow zum Bauen und Testen von Java/Maven Projekten. Es enthält folgende Jobs:
 
-* *Compile*: +
-Führt das Maven Goal ‚compile‘ aus.
+- *Compile*: +
+Führt das Maven Goal `compile` aus.
 
-* *Test*: +
-Führt das Maven Goal ‚test‘ aus
+- *Test*: +
+Führt das Maven Goal `test` aus
 
-* *CodeQuality*: +
-Führt die beiden Maven Plugins ‚checkstyle‘ und ‚spotbugs‘ aus. Der Job wird nur ausgeführt, wenn für ein Projekt Sonar (SONAR_PROJECT_KEY) nicht konfiguriert wurde.
+- *CodeQuality*: +
+Führt die beiden Maven Plugins `checkstyle` und ‚spotbugs‘ aus. Der Job wird nur ausgeführt, wenn für ein Projekt Sonar (`SONAR_PROJECT_KEY`) nicht konfiguriert wurde.
 
-* *SonarScan*: +
-Führt das Maven Plugin ‚SonarScan‘ aus. Der Scan wird nach dem Job Test ausgeführt, damit dessen Ergebnisse (insb. die Test Coverage) auch auf Sonar Cloud verfügbar sind. Dieser Job ist optional und wird nur ausgeführt, wenn ein Sonar Projekt Key konfiguriert wurde. Dieser Job schlägt nur fehl, wenn es nicht möglich war eine Analyse durchzuführen. Die Prüfung, ob das zugehörige Quality Gate erfüllt wurde, erfolgt in Sonar Cloud und wird über einen zusätzlichen Status Check angezeigt. Zudem wird dieser Job nicht bei Pull Requests, die durch den DependaBot erstellt wurden, gestartet, da der DependaBot keinen Zugriff auf das SONAR_TOKEN hat.
+- *SonarScan*: +
+Führt das Maven Plugin `SonarScan` aus. Der Scan wird nach dem Job `Test` ausgeführt, damit dessen Ergebnisse (insb. die Test Coverage) auch auf Sonar Cloud verfügbar sind. Dieser Job ist optional und wird nur ausgeführt, wenn ein Sonar Projekt Key konfiguriert wurde. Dieser Job schlägt nur fehl, wenn es nicht möglich war eine Analyse durchzuführen. Die Prüfung, ob das zugehörige Quality Gate erfüllt wurde, erfolgt in SonarCloud und wird über einen zusätzlichen Status Check angezeigt. Zudem wird dieser Job nicht bei Pull Requests, die durch den Dependabot erstellt wurden, gestartet, da der Dependabot keinen Zugriff auf das `SONAR_TOKEN` hat.
 
-* *Commit Message Checker*: +
-Gleicht die Commit Messages mit einem RegEx-Pattern ab und gibt eine Success bzw. Error Message aus, je nachdem, ob sie der Konvention entsprechen. Ein GitHub-Token (secrets.GITHUB_TOKEN), welches ausschließlich ein Lese-Recht auf Inhalte besitzt, wird zur Authentifizierung verwendet.
+- *Commit Message Checker*: +
+Gleicht die Commit Messages mit einem RegEx-Pattern ab und gibt eine Success bzw. Error Message aus, je nachdem, ob sie der Konvention entsprechen. Ein GitHub-Token (`secrets.GITHUB_TOKEN`), welches ausschließlich ein Lese-Recht auf Inhalte besitzt, wird zur Authentifizierung verwendet.
 
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
 
 [width="100%",cols="20%,^15%,^20%,45%",options="header",]
 |===
-^|*Eingabe* ^|*Erforderlich* ^|*Standardwert* ^|*Beschreibung*
-|jdk-version |Nein |17 |Version des zu verwendenden JDKs
-|maven-opts |Nein |’’ |Zusätzliche Argumente, die an Maven weitergegeben werden
-|checkout-lfs |Nein |false |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
-|version |Nein |‘0.0.0-SNAPSHOT’ |Version für Maven CI Friendly Versions
-|sonar-skip |Nein |false |Erlaubt das Überspringen des Jobs SonarScan
+^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
+|`jdk-version` |Nein |`17` |Version des zu verwendenden JDKs
+|`maven-opts` |Nein |`""` |Zusätzliche Argumente, die an Maven weitergegeben werden
+|`checkout-lfs` |Nein |`false` |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
+|`version` |Nein |`0.0.0-SNAPSHOT` |Version für Maven CI Friendly Versions
+|`sonar-skip` |Nein |`false` |Erlaubt das Überspringen des Jobs SonarScan
 4+^|*Secrets*
-|SONAR_TOKEN |Nein | |Token zu Sonar Cloud um das Ergebnis des Scans zu veröffentlichen
-|GH_PACKAGES_TOKEN |Nein | |Token für Zugriff auf GitHub Packages
+|`SONAR_TOKEN` |Nein | |Token zu Sonar Cloud um das Ergebnis des Scans zu veröffentlichen
+|`GH_PACKAGES_TOKEN` |Nein | |Token für Zugriff auf GitHub Packages
 |===
+
+=== Dependency Review Template
+Das Template `dependency_review_template.yml` stellt einen Job `DependencyReview` bereit, der verwendet wird, um die Dependencies eines Projekts zu überprüfen und sicherzustellen, dass sie mit den definierten Lizenzanforderungen übereinstimmen.
+
+Beim Aufruf des Templates können folgende Parameter übergeben werden:
+
+[options="header"]
+|===
+^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
+|`base-ref` |Nein |`${{ github.event.pull_request.base.sha }}` .2+|Git-Referenzen für die Git-Base/den Git-Head bei der Durchführung der Vergleichsprüfung. Dies wird nur für andere Event Types als `pull_request` und `pull_request_target` verwendet
+|`head-ref` |Nein |`${{ github.event.pull_request.head.sha }}` |
+|===
+
+Die Datei `dependency_review_config.yml` definiert die Lizenztypen, die in den Projekten erlaubt sind. Diese Konfiguration basiert auf bekannten und anerkannten Lizenzreferenzen von https://opensource.google/documentation/reference/thirdparty/licenses[Google Open Source].
 
 === Dependency Scan Template
 
-Das Template maven_depenency_scan_template.yml stellt einen Job “Monitor” bereit, welcher Snyk verwendet, um die Open Source Abhängigkeiten des Projektes kontinuierlich zu überwachen.
+Das Template `maven_depenency_scan_template.yml` stellt einen Job `Monitor` bereit, welcher Snyk verwendet, um die Open Source Abhängigkeiten des Projektes kontinuierlich zu überwachen.
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
 
 [width="100%",cols="20%,^14%,^18%,48%",options="header",]
 |===
-^|*Eingabe* ^|*Erforderlich* ^|*Standardwert* ^|*Beschreibung*
-|jdk-version |Nein |17 |Version des zu verwendenden JDKs
-|checkout-lfs |Nein |false |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
-|snyk-organization |Nein | |Organisations-ID für die Zuordnung auf Snyk
-|snyk-reference |Ja | |Referenz für das Ergebnis auf Snyk, z.B. Branchname
-|snyk-arguments |Nein |"--maven-aggregate-project" | Optionale Befehle für die SNYK CLI
+^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
+|`jdk-version` |Nein |`17` |Version des zu verwendenden JDKs
+|`checkout-lfs` |Nein |`false` |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
+|`snyk-organization` |Nein | |Organisations-ID für die Zuordnung auf Snyk
+|`snyk-reference` |Ja | |Referenz für das Ergebnis auf Snyk, z.B. Branchname
+|`snyk-arguments` |Nein |`--maven-aggregate-project` | Optionale Befehle für die Snyk CLI
 4+^|*Secrets*
-|SNYK_TOKEN |Ja | |Token zur Authentifizierung bei Snyk
+|`SNYK_TOKEN` |Ja | |Token zur Authentifizierung bei Snyk
 |===
 
 === Deploy Template
 
-Das Template maven_deploy_template.yml stellt Jobs zum Veröffentlichen von Artefakten bereit.
+Das Template `maven_deploy_template.yml` stellt Jobs zum Veröffentlichen von Artefakten bereit.
 Es kann sowohl für die Veröffentlichung von Snapshots als auch stable Releases genutzt werden.
 Das Deployment kann auf verschiedene Repositories, wie z.B. Maven Central oder GitHub Packages erfolgen.
 Das Template enthält folgende Jobs:
 
-* *Validate*: +
+- *Validate*: +
 Prüft die Korrektheit eines Releases und insbesondere die verwendete Version. Der Job stellt sicher, dass die angegebene Version im Build/POM verwendet wird und diese den Vorgaben von Semantic Versioning folgt.
 Bei Releases, die über tags ausgelöst wurden, wird geprüft, dass es sich bei der Version um keinen Pre-Release handelt
 und, dass die verwendete Version nicht bereits auf Deploy-Repository vorhanden ist.
 Bei Releases, die ohne tag erfolgen, wird geprüft, dass es sich um Snapshots handelt.
 
-* *Deploy*: +
-Führt das Deployment aus. Neben den Jars (inklusive Source und Dokumentation) kann  der Job auch eine SBOM erstellen und  alle erzeugten Artefakte signieren.
+- *Deploy*: +
+Führt das Deployment aus. Neben den Jars (inklusive Source und Dokumentation) kann der Job auch eine SBOM erstellen und  alle erzeugten Artefakte signieren.
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
 
 [width="100%",cols="34%,^14%,^17%,35%",options="header",]
 |===
-^|*Eingabe* ^|*Erforderlich* ^|*Standardwert* ^|*Beschreibung*
-|jdk-version |Nein |17 |Version des zu verwendenden JDKs
-|maven-opts |Nein |’’ |Zusätzliche Argumente, die an Maven weitergegeben werden
-|checkout-lfs |Nein |false |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
-|version |Ja | |Version des zu deployenden Artefakts
-|deploy-server-id |Nein | |Referenz zum Repository, auf welches das Deployment erfolgt.
-|deploy-url-release | | | URL zum Repository für stable Releases
-|deploy-url-snapshot | | |URL zum Repository für Pre-Releases
-|sbom |Nein |false |Erstellt eine SBOM im CycloneDX Format
-|sign |Nein |false | Signiert alle Artefakte. Erfordert GPG Private Key und Passphrase.
+^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
+|`jdk-version` |Nein |`17` |Version des zu verwendenden JDKs
+|`maven-opts` |Nein |`""` |Zusätzliche Argumente, die an Maven weitergegeben werden
+|`checkout-lfs` |Nein |`false` |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
+|`version` |Ja | |Version des zu deployenden Artefakts
+|`deploy-server-id` |Nein | |Referenz zum Repository, auf welches das Deployment erfolgt.
+|`deploy-url-release` | | | URL zum Repository für stable Releases
+|`deploy-url-snapshot` | | |URL zum Repository für Pre-Releases
+|`sbom` |Nein |`false` |Erstellt eine SBOM im CycloneDX Format
+|`sign` |Nein |`false` | Signiert alle Artefakte. Erfordert GPG Private Key und Passphrase.
 4+^|*Secrets*
-|GPG_PRIVATE_KEY |Nein | |Privater GPG Key zur Signierung der Artefakte
-|GPG_PASSPHRASE |Nein | |Passphrase für GPGG Key
-|DEPLOY_SERVER_USER_NAME |Nein | |Benutzer für Repository zum Deployment
-|DEPLOY_SERVER_TOKEN |Nein | |Token  oder Passwort für Repository zum Deployment
-|GH_PACKAGES_TOKEN |Nein | |Token für Zugriff auf GitHub Packages (siehe GitHub Packages)
+|`GPG_PRIVATE_KEY` |Nein | |Privater GPG Key zur Signierung der Artefakte
+|`GPG_PASSPHRASE` |Nein | |Passphrase für GPG Key
+|`DEPLOY_SERVER_USER_NAME` |Nein | |Benutzer für Repository zum Deployment
+|`DEPLOY_SERVER_TOKEN` |Nein | |Token  oder Passwort für Repository zum Deployment
+|`GH_PACKAGES_TOKEN` |Nein | |Token für Zugriff auf GitHub Packages (siehe GitHub Packages)
 |===
 
-TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input deploy-server-id werden durch die Setup Java Github Action einer generierten settings.xml hinzugefügt (https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md)
+TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input `deploy-server-id` werden durch die Setup Java GitHub Action einer generierten settings.xml hinzugefügt (https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md)
 
-= Verwendung der Templates
+== Verwendung der Templates
 
-=== Next-Version Template
+=== Next Version Template
 
 [width="100%",cols="35%,35%,^30%"]
 |===
@@ -141,9 +158,9 @@ TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input deploy-
 ^|*Next Version*
 
 .2+.^|isyfact-standards
-     |master |4.0.0
+     |master |`4.0.0`
      |release/3.x ^|
-.1+.^|ifsyfact-bom
+.1+.^|isyfact-bom
      |master |
 .1+.^|isy-web
      |master |
@@ -157,21 +174,27 @@ TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input deploy-
 ^|*JDK* ^|*Maven Opts* ^|*LFS* ^|*Version* ^|*Sonar Token* ^|*GitHub Packages Token*
 
 .3+.^|isyfact-standars
-     |master |17 | |false |next-version* |+ |-
-     |release/3.x ^|17 | |false |next-version* |+ |-
-     |release/2.x ^|8 | |false | |+ |-
+     |master |`17` | |`false` |`next-version`* |+ |-
+     |release/3.x ^|`17` | |`false` |`next-version`* |+ |-
+     |release/2.x ^|`8` | |`false` | |+ |-
+
 .2+.^|isy-web
-     |master |17 |-pl isy-web-lib +
-                  -Dskip.js.tests=true +
-                  -s ./.github/settings.xml|true |next-version* |- |+
-     |release/5.x ^|8 |-pl isy-web-lib +
-                       -Dskip.js.tests=true +
-                       -s ./.github/settings.xml|true | |- |+
+     |master |`17` |`-pl isy-web-lib -Dskip.js.tests=true -s ./.github/settings.xml`|`true` |`next-version`* |- |+
+     |release/5.x ^|`8` |`-pl isy-web-lib -Dskip.js.tests=true -s ./.github/settings.xml`|`true` | |- |+
 |===
 
-NOTE: In isy-web werden einige Konfigurationsdateien über den LFS gespeichert, welche für eine korrekte Funktionsweise der Anwendung und somit insbesondere für das erfolgreiche Durchlaufen der Tests erforderlich sind.
+NOTE: In `isy-web` werden einige Konfigurationsdateien über den LFS gespeichert, welche für eine korrekte Funktionsweise der Anwendung und somit insbesondere für das erfolgreiche Durchlaufen der Tests erforderlich sind.
 
-NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version gemeint (siehe <<Next-Version Template>>).
+NOTE: Mit `next-version` ist die berechnete Version des Jobs Next-Version gemeint (siehe <<Next Version Template>>).
+
+=== Dependency Review Template
+[]
+|===
+.2+^.^|*Repository* .2+^.^|*Branch* 2+^.^|*Inputs*
+^|*base-ref* ^|*head-ref* |
+
+isy-sonderzeichen|develop| `${{ github.event.pull_request.base.sha }}` | `${{ github.event.pull_request.head.sha }}` |
+|===
 
 === Dependency Scan Template
 
@@ -181,11 +204,12 @@ NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version ge
 ^|*JDK* ^|*LFS* ^|*Snyk Organization* ^|*Snyk Reference* ^|*Snyk Arguments* ^|*Snyk Token*
 
 .3+.^|isyfact-standards
-     |master |17 |false |$SNYK_ORG_ID |$GITHUB_REF_NAME |"--maven-aggregate-project" |+
-     |release/3.x ^|17 |false |$SNYK_ORG_ID |$GITHUB_REF_NAME |"--maven-aggregate-project" |+
-     |release/2.x ^|8 |false |$SNYK_ORG_ID |$GITHUB_REF_NAME |"--maven-aggregate-project" |+
+     |master |`17` |`false` |`$SNYK_ORG_ID` |`$GITHUB_REF_NAME` |`--maven-aggregate-project` |+
+     |release/3.x ^|`17` |`false` |`$SNYK_ORG_ID` |`$GITHUB_REF_NAME` |`--maven-aggregate-project` |+
+     |release/2.x ^|`8` |`false` |`$SNYK_ORG_ID` |`$GITHUB_REF_NAME` |`--maven-aggregate-project` |+
+
 .3+.^|isyweb
-     |master |17 |false |$SNYK_ORG_ID |$GITHUB_REF_NAME |"--all-projects" |+
+     |master |`17` |`false` |`$SNYK_ORG_ID` |`$GITHUB_REF_NAME` |`--all-projects` |+
 |===
 
 [TIP]
@@ -203,28 +227,26 @@ NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version ge
 ^|*JDK* ^|*Maven Opts* ^|*LFS* ^|*Version* ^|*Deploy Server ID* ^|*Deploy URL Snapshot* ^|*SBOM* ^|*Sign* ^|*GitHub Packages Token*
 
 .3+.^|isyfact-standards
-     |master |17 |-DaltDeploymentRepository=github::default::https://maven.pkg.github.com/IsyFact/isyfact-standards
-             |false |next-version* |github | |false |false |-
-     |release/3.x ^|17 |-DaltDeploymentRepository=github::default::https://maven.pkg.github.com/IsyFact/isyfact-standards
-                   |false |next-version* |github | |false |false |-
-     |release/2.x ^|8 |-DaltDeploymentRepository=github::default::https://maven.pkg.github.com/IsyFact/isyfact-standards
-                   |false |2.5.0-SNAPSHOT |github | |false |false |-
+     |master |`17` |`-DaltDeploymentRepository=github::default::https://maven.pkg.github.com/IsyFact/isyfact-standards`
+             |`false` |`next-version`* |`github` | |`false` |`false` |-
+     |release/3.x ^|`17` |`-DaltDeploymentRepository=github::default::https://maven.pkg.github.com/IsyFact/isyfact-standards`
+                   |`false` |`next-version`* |`github` | |`false` |`false` |-
+     |release/2.x ^|`8` |`-DaltDeploymentRepository=github::default::https://maven.pkg.github.com/IsyFact/isyfact-standards`
+                   |`false` |`2.5.0-SNAPSHOT` |`github` | |`false` |`false` |-
+
 .2+.^|isyfact-bom
-     |master |17 |-s ./.github/settings.xml |false |next-version* |github |https://maven.pkg.github.com/IsyFact/isyfact-bom |false |false |+
-     |release/2.x ^|8 |-s ./.github/settings.xml |false |2.5.0-SNAPSHOT |github |https://maven.pkg.github.com/IsyFact/isyfact-bom |false |false |+
+     |master |`17` |`-s ./.github/settings.xml` |`false` |`next-version`* |`github` |`https://maven.pkg.github.com/IsyFact/isyfact-bom` |`false` |`false` |+
+     |release/2.x ^|`8` |`-s ./.github/settings.xml` |`false` |`2.5.0-SNAPSHOT` |`github` |`https://maven.pkg.github.com/IsyFact/isyfact-bom` |`false` |`false` |+
+
 .2+.^|isy-web
-     |master ^|17 | -pl isy-web-lib +
-                    -Dskip.js.tests=true +
-                    -s ./.github/settings.xml |true |next-version* |github |https://maven.pkg.github.com/IsyFact/isy-web |false |false |+
-     |release/5.x ^|8 | -pl !isy-web-doc +
-                    -Dskip.js.tests=true +
-                    -s ./.github/settings.xml |true |5.4.0-SNAPSHOT |github |https://maven.pkg.github.com/IsyFact/isy-web |false |false |+
+     |master ^|`17` |`-pl isy-web-lib -Dskip.js.tests=true -s ./.github/settings.xml` |`true` |`next-version`* |`github` |`https://maven.pkg.github.com/IsyFact/isy-web` |`false` |`false` |+
+     |release/5.x ^|`8` |`-pl !isy-web-doc -Dskip.js.tests=true -s ./.github/settings.xml` |`true` |`5.4.0-SNAPSHOT` |`github` |`https://maven.pkg.github.com/IsyFact/isy-web` |`false` |`false` |+
 |===
 
-NOTE: Bei isyfact-standards werden die Credentials für GitHub Packages über die Secrets DEPLOY_SERVER_USER_NAME und  DEPLOY_SERVER_TOKEN an das Deploy-Template weitergereicht.
+NOTE: Bei isyfact-standards werden die Credentials für GitHub Packages über die Secrets `DEPLOY_SERVER_USER_NAME` und `DEPLOY_SERVER_TOKEN` an das Deploy-Template weitergereicht.
 In den anderen Repositories erfolgt die Konfiguration in der angegebenen settings.xml zusammen mit dem GitHub Packages Token.
 
-NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version gemeint (siehe <<Next-Version Template>>).
+NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version gemeint (siehe <<Next Version Template>>).
 
 ==== Verwendung in Release Workflows (Stable Release)
 [width="100%",cols="25%,10%,^5%,^33%,^3%,^1%,^1%,^5%,^15%,^2%"]
@@ -233,20 +255,19 @@ NOTE: Mit ```next-version``` ist die berechnete Version des Jobs Next-Version ge
 ^|*JDK* ^|*Maven Opts* ^|*LFS* ^|*Version* ^|*Deploy Server ID* ^|*SBOM* ^|*Sign* ^|*GitHub Packages Token*
 
 .3+.^|isyfact-standards
-     |master |17 |-P centralRelease |false |$GITHUB_REF_NAME |ossrh |true |true |-
-     |release/3.x ^|17 |-P centralRelease |false |$GITHUB_REF_NAME |ossrh |true |true |-
-     |release/2.x ^|8 |-P centralRelease |false |$GITHUB_REF_NAME |ossrh |true |true |-
+     |master |`17` |`-P centralRelease` |`false` |`$GITHUB_REF_NAME` |`ossrh` |`true` |`true` |-
+     |release/3.x ^|`17` |`-P centralRelease` |`false` |`$GITHUB_REF_NAME` |`ossrh` |`true` |`true` |-
+     |release/2.x ^|`8` |`-P centralRelease` |`false` |`$GITHUB_REF_NAME` |`ossrh` |`true` |`true` |-
+
 .2+.^|isyfact-bom
-     |master |17 | -s ./.github/settings.xml -P centralRelease |false |$GITHUB_REF_NAME |ossrh |true |true |+
-     |release/2.x ^|8 |-s ./.github/settings.xml -P centralRelease |false |$GITHUB_REF_NAME |ossrh |true |true |+
+     |master |`17` | `-s ./.github/settings.xml -P centralRelease` |`false` |`$GITHUB_REF_NAME` |`ossrh` |`true` |`true` |+
+     |release/2.x ^|`8` |`-s ./.github/settings.xml -P centralRelease` |`false` |`$GITHUB_REF_NAME` |`ossrh` |`true` |`true` |+
+
 .2+.^|isy-web
-     |master |17 | -pl isy-web-lib +
-                   -Dskip.js.tests=true +
-                   -P centralRelease |true |$GITHUB_REF_NAME |ossrh |true |true |-
-     |release/5.x ^|8 | -pl !isy-web-doc +
-                    -Dskip.js.tests=true +
-                    -P centralRelease |true |$GITHUB_REF_NAME |ossrh |true |true |-
-|isy-checkstyle-plugin |main |17 |-P centralRelease |false |$GITHUB_REF_NAME |ossrh |true |true |-
+     |master |`17` | `-pl isy-web-lib -Dskip.js.tests=true -P centralRelease` |`true` |`$GITHUB_REF_NAME` |`ossrh` |`true` |`true` |-
+     |release/5.x ^|`8` | `-pl !isy-web-doc -Dskip.js.tests=true -P centralRelease` |`true` |`$GITHUB_REF_NAME` |`ossrh` |`true` |`true` |-
+
+|isy-checkstyle-plugin |main |`17` |`-P centralRelease` |`false` |`$GITHUB_REF_NAME` |`ossrh` |`true` |`true` |-
 |===
 
 IMPORTANT: Für die weiteren im <<Deploy Template>> aufgelisteten Secrets werden bei allen Workflows, die dieses Template verwenden, die entsprechenden Variablen für Maven Central und GPG übergeben. Dies wird zugunsten der Übersichtlichkeit jedoch in obiger Tabelle ausgelassen.
@@ -255,4 +276,4 @@ NOTE: Nicht erwähnte Eingabeparameter wie deploy-url-release und deploy-url-sna
 
 NOTE: In isy-web werden einige Konfigurationsdateien über den LFS gespeichert, welche für eine korrekte Funktionsweise der Anwendung und somit insbesondere für das erfolgreiche Durchlaufen der Tests erforderlich sind.
 
-TIP: $GITHUB_REF_NAME ist eine vordefinierte Variable innerhalb von GitHub Actions und enthält den Namen des zugehörigen Tags eines Releases.
+TIP: `$GITHUB_REF_NAME` ist eine vordefinierte Variable innerhalb von GitHub Actions und enthält den Namen des zugehörigen Tags eines Releases.
