@@ -79,15 +79,6 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 === Dependency Review Template
 Das Template `dependency_review_template.yml` stellt einen Job `DependencyReview` bereit, der verwendet wird, um die Dependencies eines Projekts zu überprüfen und sicherzustellen, dass sie mit den definierten Lizenzanforderungen übereinstimmen.
 
-Beim Aufruf des Templates können folgende Parameter übergeben werden:
-
-[options="header"]
-|===
-^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
-|`base-ref` |Nein |`${{ github.event.pull_request.base.sha }}` .2+|Git-Referenzen für die Git-Base/den Git-Head bei der Durchführung der Vergleichsprüfung. Dies wird nur für andere Event Types als `pull_request` und `pull_request_target` verwendet
-|`head-ref` |Nein |`${{ github.event.pull_request.head.sha }}` |
-|===
-
 Die Datei `dependency_review_config.yml` definiert die Lizenztypen, die in den Projekten erlaubt sind. Diese Konfiguration basiert auf bekannten und anerkannten Lizenzreferenzen von https://opensource.google/documentation/reference/thirdparty/licenses[Google Open Source].
 
 === Dependency Scan Template
