@@ -1,17 +1,6 @@
 name: Dependency Review Template
 on:
   workflow_call:
-    inputs:
-      base-ref:
-        description: Git references for the git base
-        required: false
-        default: ${{ github.event.pull_request.base.sha }}
-        type: string
-      head-ref:
-        description: Git references for the git head
-        required: false
-        default: ${{ github.event.pull_request.head.sha }}
-        type: string
 
 jobs:
   DependencyReview:
@@ -24,6 +13,4 @@ jobs:
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
         with:
-          config-file: IsyFact/isy-github-actions-templates/.github/dependency_review_config.yml@feature/IFS-2835_license_management_isy_sonderzeichen
-          base-ref: ${{ inputs.base-ref }}
-          head-ref: ${{ inputs.head-ref }}
+          config-file: IsyFact/isy-github-actions-templates/.github/dependency_review_config.yml@v1.1.0
