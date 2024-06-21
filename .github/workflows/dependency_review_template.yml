@@ -12,3 +12,5 @@ jobs:
         uses: actions/checkout@v4
       - name: Dependency Review
         uses: actions/dependency-review-action@v4
+        with:
+          config-file: IsyFact/isy-github-actions-templates/.github/dependency_review_config.yml@v1.0.0
