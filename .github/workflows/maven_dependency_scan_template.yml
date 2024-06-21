@@ -25,16 +25,16 @@ on:
         description: "Optional arguments for Snyk CLI"
         type: string
         default: "--maven-aggregate-project"
-      severity-threshold:
-        required: false
-        description: 'Severity threshold for Snyk scan'
-        type: string
-        default: 'critical'
       perform-scan:
         required: false
         description: 'Perform scanning instead of monitoring'
         type: boolean
         default: false
+      severity-threshold:
+        required: false
+        description: 'Severity threshold for Snyk scan'
+        type: string
+        default: 'critical'
     secrets:
       SNYK_TOKEN:
         required: true
