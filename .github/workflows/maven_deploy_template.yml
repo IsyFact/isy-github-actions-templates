@@ -24,23 +24,23 @@ on:
       deploy-server-id:
         required: false
         type: string
-        description: 'Reference to repository that is used for deployment'
+        description: 'Reference to deployment repository'
         default: 'repository'
       deploy-url-release:
         required: false
         type: string
-        description: 'URL to deploy releases to'
+        description: 'Deployment URL for releases'
       deploy-url-snapshot:
         required: false
         type: string
-        description: 'URL to deploy snapshots to'
+        description: 'Deployment URL for snapshots'
       sbom:
-        description: 'Create SBOM in cycloneDx format'
+        description: 'Create SBOM in CycloneDx format'
         required: false
         type: boolean
         default: false
       sign:
-        description: 'Sign all build artifacts with gpg'
+        description: 'Sign all build artifacts with GPG'
         required: false
         type: boolean
         default: false
@@ -50,13 +50,13 @@ on:
         description: 'Private GPG key to sign artifacts with'
       GPG_PASSPHRASE:
         required: false
-        description: 'Passphrase for private gpg key'
+        description: 'Passphrase for private GPG key'
       DEPLOY_SERVER_USER_NAME:
         required: false
-        description: 'User name for maven central for deployment'
+        description: 'Username for deployment server (GitHub Packages or Maven Central)'
       DEPLOY_SERVER_TOKEN:
         required: false
-        description: 'Token for maven central for deployment'
+        description: 'Token for deployment server (GitHub Packages or Maven Central)'
       GH_PACKAGES_TOKEN:
         required: false
         description: 'GitHub Packages token'
@@ -64,7 +64,7 @@ on:
 env:
   MAVEN_CLI_OPTS: '--batch-mode --errors --fail-at-end -T 1C'
   GH_PACKAGES_TOKEN: ${{ secrets.GH_PACKAGES_TOKEN }}
-  
+
 jobs:
   Validate:
     runs-on: ubuntu-latest
@@ -79,7 +79,7 @@ jobs:
             echo "Release requires a tag containing a valid SemVer 2.0.0 without pre-release version"
             exit 1
           fi
-      - name: Checkout project
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: ${{ inputs.checkout-lfs }}
@@ -129,7 +129,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Validate]
     steps:
-      - name: Checkout project
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: ${{ inputs.checkout-lfs }}
@@ -141,15 +141,15 @@ jobs:
           # arguments for generated settings.xml
           # see https://github.com/actions/setup-java/blob/v3.11.0/docs/advanced-usage.md#publishing-using-apache-maven
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-          gpg-passphrase: GPG_PASSPHRASE # env variable for GPG private key passphrase
+          gpg-passphrase: GPG_PASSPHRASE
           server-id: ${{ inputs.deploy-server-id }} # Value of the distributionManagement/repository/id field of the pom.xml
-          server-username: DEPLOY_SERVER_USERNAME # env variable for username in deploy
-          server-password: DEPLOY_SERVER_TOKEN # env variable for token in deploy
+          server-username: DEPLOY_SERVER_USERNAME
+          server-password: DEPLOY_SERVER_TOKEN
       - name: Setup variables for signing and sbom
         run: |
           echo "CYCLONEDX_SBOM_OPTS=$([ ${{ inputs.sbom }} == "true" ] && echo "cyclonedx:makeBom" || echo "")" >> $GITHUB_ENV
           echo "GPG_SIGN_OPTS=$([ ${{ inputs.sign }} == "true" ] && echo "-P GPGsigning" || echo "")" >> $GITHUB_ENV
-      - name: SBOM, Sign & Deploy
+      - name: SBOM, GPG Signing & Deployment
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           DEPLOY_SERVER_USERNAME: ${{ secrets.DEPLOY_SERVER_USER_NAME }}

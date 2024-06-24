@@ -8,23 +8,33 @@ on:
         type: number
         default: 17
       checkout-lfs:
-          required: false
-          description: 'Enable Git LFS checkout'
-          type: boolean
-          default: false
+        required: false
+        description: 'Enable Git LFS checkout'
+        type: boolean
+        default: false
       snyk-organization:
         required: false
         description: 'Snyk Organization ID'
         type: string
       snyk-reference:
         required: true
-        description: 'Target reference for snyk project'
+        description: 'Target reference for Snyk project'
         type: string
       snyk-arguments:
         required: false
-        description: "Optional arguments for snyk cli"
+        description: "Optional arguments for Snyk CLI"
         type: string
         default: "--maven-aggregate-project"
+      perform-scan:
+        required: false
+        description: 'Perform scanning instead of monitoring'
+        type: boolean
+        default: false
+      severity-threshold:
+        required: false
+        description: 'Severity threshold for Snyk scan'
+        type: string
+        default: 'critical'
     secrets:
       SNYK_TOKEN:
         required: true
@@ -37,11 +47,11 @@ jobs:
   Monitor:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: ${{ inputs.checkout-lfs }}
-      - name: Setup snyk
+      - name: Setup Snyk
         uses: snyk/actions/setup@master
       - name: Setup JDK ${{ inputs.jdk-version }}
         uses: actions/setup-java@v4
@@ -49,8 +59,10 @@ jobs:
           java-version: ${{ inputs.jdk-version }}
           distribution: temurin
           cache: maven
-      - name: Create dependency snapshot to monitor for vulnerabilities
-        run: > 
-          snyk monitor 
-          ${{ inputs.snyk-arguments }}
-          --target-reference=${{ inputs.snyk-reference }} --org=${{ inputs.snyk-organization }}
+      - name: Run Snyk task
+        run: |
+          if [ "${{ inputs.perform-scan }}" = "true" ]; then
+            snyk test ${{ inputs.snyk-arguments }} --severity-threshold=${{ inputs.severity-threshold }} --target-reference=${{ inputs.snyk-reference }} --org=${{ inputs.snyk-organization }}
+          else
+            snyk monitor ${{ inputs.snyk-arguments }} --target-reference=${{ inputs.snyk-reference }} --org=${{ inputs.snyk-organization }}
+          fi

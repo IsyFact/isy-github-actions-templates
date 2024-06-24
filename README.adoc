@@ -83,7 +83,7 @@ Die Datei `dependency_review_config.yml` definiert die Lizenztypen, die in den P
 
 === Dependency Scan Template
 
-Das Template `maven_depenency_scan_template.yml` stellt einen Job `Monitor` bereit, welcher Snyk verwendet, um die Open Source Abhängigkeiten des Projektes kontinuierlich zu überwachen.
+Das Template `maven_depenency_scan_template.yml` wurde entwickelt, um Snyk für die Monitoring und Scanning der Open-Source-Dependencies eines Maven-Projektes zu integrieren. Sie enthält verschiedene konfigurierbare Inputs, um die Einrichtung und Ausführung des Dependency-Scan-Prozesses anzupassen.
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
 
@@ -95,6 +95,8 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |`snyk-organization` |Nein | |Organisations-ID für die Zuordnung auf Snyk
 |`snyk-reference` |Ja | |Referenz für das Ergebnis auf Snyk, z.B. Branchname
 |`snyk-arguments` |Nein |`--maven-aggregate-project` | Optionale Befehle für die Snyk CLI
+|`perform-scan` |Nein |`false` | Durchführung von Scanning statt Monitoring
+|`severity-threshold` |Nein |`critical` | Schweregrad für Snyk-Scan
 4+^|*Secrets*
 |`SNYK_TOKEN` |Ja | |Token zur Authentifizierung bei Snyk
 |===
