@@ -142,7 +142,7 @@ jobs:
           # see https://github.com/actions/setup-java/blob/v3.11.0/docs/advanced-usage.md#publishing-using-apache-maven
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
           gpg-passphrase: GPG_PASSPHRASE
-          server-id: DEPLOY_SERVER_ID # Value of the distributionManagement/repository/id field of the pom.xml
+          server-id: ${{ inputs.deploy-server-id }} # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: DEPLOY_SERVER_USERNAME
           server-password: DEPLOY_SERVER_TOKEN
       - name: Setup variables for signing and sbom
@@ -155,8 +155,8 @@ jobs:
           DEPLOY_SERVER_USERNAME: ${{ secrets.DEPLOY_SERVER_USER_NAME }}
           DEPLOY_SERVER_TOKEN: ${{ secrets.DEPLOY_SERVER_TOKEN }}
           DEPLOY_SERVER_ID: ${{ inputs.deploy-server-id }}
-          DEPLOY_URL_RELEASE: ${{ inputs.deploy-url-release }}
-          DEPLOY_URL_SNAPSHOT: ${{ inputs.deploy-url-snapshot }}
+          DEPLOYURL_RELEASE: ${{ inputs.deploy-url-release }}
+          DEPLOYURL_SNAPSHOT: ${{ inputs.deploy-url-snapshot }}
         run: >
           mvn -DskipTests -Dspotbugs.skip -Dcheckstyle.skip  -DdeployAtEnd -Drevision=${{ inputs.version }}
           $MAVEN_CLI_OPTS ${{ inputs.maven-opts }} $GPG_SIGN_OPTS $CYCLONEDX_SBOM_OPTS deploy
