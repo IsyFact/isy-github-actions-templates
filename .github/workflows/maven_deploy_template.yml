@@ -44,6 +44,11 @@ on:
         required: false
         type: boolean
         default: false
+      environment:
+        description: 'GitHub Environment'
+        required: false
+        type: string
+        default: ''
     secrets:
       GPG_PRIVATE_KEY:
         required: false
@@ -68,6 +73,7 @@ env:
 jobs:
   Validate:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps:
       - name: Validate tagged version
         if: github.ref_type == 'tag'
@@ -127,6 +133,7 @@ jobs:
 
   Deploy:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     needs: [Validate]
     steps:
       - name: Checkout
