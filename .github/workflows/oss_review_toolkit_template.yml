@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Download report template
         run: |
-          curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1/ort-config/cve_summary_report_template.ftl
+          curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.2.0/ort-config/cve_summary_report_template.ftl
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@v1
         with:
