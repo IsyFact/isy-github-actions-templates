@@ -1,10 +1,7 @@
 name: OSS Review Toolkit
 on:
   workflow_call:
-    branches:
-      - master
-      - main
-      - 'releases/**'
+
 jobs:
   ort:
     runs-on: ubuntu-latest
