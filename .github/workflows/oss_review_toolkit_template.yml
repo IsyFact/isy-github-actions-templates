@@ -18,8 +18,8 @@ jobs:
           curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.2.0/ort-config/cve_summary_report_template.ftl
       - name: Download license management config files
         run: |
-          curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1 /ort-config/license-classifications.yml
-          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1 /ort-config/evaluator.rules.kts
+          curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1/ort-config/license-classifications.yml
+          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1/ort-config/evaluator.rules.kts
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@v1
         with:
