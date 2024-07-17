@@ -1,10 +1,8 @@
 val allowedLicenses = licenseClassifications.licensesByCategory["allow"].orEmpty()
 
 fun RuleSet.wrongLicenseInLicenseFileRule() = projectSourceRule("WRONG_LICENSE_IN_LICENSE_FILE_RULE") {
-    require {
-        +projectSourceHasFile("LICENSE")
-    }
 
+    println("XXXXXXXXXXXXXXXX TEST XXXXXXXXXXXXXX")
     val detectedRootLicenses = projectSourceGetDetectedLicensesByFilePath("LICENSE").values.flatten().toSet()
     val wrongLicenses = detectedRootLicenses - allowedLicenses
 
