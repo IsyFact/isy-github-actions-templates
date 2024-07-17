@@ -25,11 +25,11 @@
 [/#list]
 [/#list]
 [#assign Total = Unknown + Low + Medium + High + Critical]
-* Unknown: ${Unknown}
-* Low: ${Low}
-* Medium: ${Medium}
-* High: ${High}
 * Critical: ${Critical}
+* High: ${High}
+* Medium: ${Medium}
+* Low: ${Low}
+* Unknown: ${Unknown}
 * Total: ${Total}
 
 == Packages

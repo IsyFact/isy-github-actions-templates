@@ -141,6 +141,10 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 
 TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input `deploy-server-id` werden durch die Setup Java GitHub Action einer generierten settings.xml hinzugefügt (https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md)
 
+=== OSS Review Toolkit Template
+Das Template `oss_review_toolki_template.yml` stellt einen Job zur Verfügung, welcher das OSS Review Toolkit aufruft. Dieses scannt alle Abhängigkeiten im Projekt und prüft sie auf CVEs. Weiterhin werden alle Lizenzen analysiert und gegebenenfalls auf Regelverstöße überprüft. All dies wird dann in verschiedenen Reports mittels Pipeline-Artefakt ausgegeben.
+Das Template hat keinerlei Parameter.
+
 == Verwendung der Templates
 
 === Next Version Template
@@ -270,3 +274,10 @@ NOTE: Nicht erwähnte Eingabeparameter wie deploy-url-release und deploy-url-sna
 NOTE: In isy-web werden einige Konfigurationsdateien über den LFS gespeichert, welche für eine korrekte Funktionsweise der Anwendung und somit insbesondere für das erfolgreiche Durchlaufen der Tests erforderlich sind.
 
 TIP: `$GITHUB_REF_NAME` ist eine vordefinierte Variable innerhalb von GitHub Actions und enthält den Namen des zugehörigen Tags eines Releases.
+
+=== OSS Review Toolkit
+
+[width="40%",cols="15%,10%, options="header",]
+|===
+^|Repository ^|Branch ^|isyfact-standards
+^|master

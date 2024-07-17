@@ -1,6 +1,7 @@
 name: OSS Review Toolkit
 on:
   workflow_call:
+
 jobs:
   ort:
     runs-on: ubuntu-latest
@@ -12,9 +13,14 @@ jobs:
       - name: Download report template
         run: |
           curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.2.0/ort-config/cve_summary_report_template.ftl
+      - name: Download license management config files
+        run: |
+          curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1/ort-config/license-classifications.yml
+          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1/ort-config/evaluator.rules.kts
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@v1
         with:
           docker-cli-args:
             --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/templates/
+            --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/config/
           report-formats: WebApp,StaticHtml,HtmlTemplate -O HtmlTemplate=template.path=/home/ort/.ort/templates/cve_summary_report_template.ftl
