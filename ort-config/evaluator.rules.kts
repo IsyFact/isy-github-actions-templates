@@ -1,28 +1,28 @@
-val allowedLicenses=licenseClassifications.licensesByCategory["allow"].orEmpty()
+val allowedLicenses = licenseClassifications.licensesByCategory["allow"].orEmpty()
 
-funRuleSet.wrongLicenseInLicenseFileRule()=projectSourceRule("WRONG_LICENSE_IN_LICENSE_FILE_RULE"){
-    println("XXXXXXXXXXXXXXXX  TEST  XXXXXXXXXXXXXX")
-    println("AllowedLicenses:${allowedLicenses.joinToString()}")
+fun RuleSet.wrongLicenseInLicenseFileRule() = projectSourceRule("WRONG_LICENSE_IN_LICENSE_FILE_RULE") {
+    println("XXXXXXXXXXXXXXXX TEST XXXXXXXXXXXXXX")
+    println("Allowed Licenses: ${allowedLicenses.joinToString()}")
 
-    val detectedRootLicenses=licenseFindings.keys
-    println("DetectedLicensesinLICENSEfile:${detectedRootLicenses.joinToString()}")
+    val detectedRootLicenses = projectSourceGetDetectedLicensesByFilePath("LICENSE").values.flatten().toSet()
+    println("Detected Licenses in LICENSE file: ${detectedRootLicenses.joinToString()}")
 
-    val wrongLicenses=detectedRootLicenses-allowedLicenses
-    println("WrongLicenses:${wrongLicenses.joinToString()}")
+    val wrongLicenses = detectedRootLicenses - allowedLicenses
+    println("Wrong Licenses: ${wrongLicenses.joinToString()}")
 
-    if(wrongLicenses.isNotEmpty()){
+    if (wrongLicenses.isNotEmpty()) {
         error(
-                message="Thefile'LICENSE'containsthefollowingdisallowedlicenses${wrongLicenses.joinToString()}.",
-                howToFix="Pleaseuseonlythefollowingallowedlicenses:${allowedLicenses.joinToString()}."
+                message = "The file 'LICENSE' contains the following disallowed licenses ${wrongLicenses.joinToString()}.",
+                howToFix = "Please use only the following allowed licenses: ${allowedLicenses.joinToString()}."
         )
-    }else if(detectedRootLicenses.isEmpty()){
+    } else if (detectedRootLicenses.isEmpty()) {
         error(
-                message="Thefile'LICENSE'doesnotcontainanylicensewhichisnotallowed.",
-                howToFix="Pleaseuseoneofthefollowingallowedlicenses:${allowedLicenses.joinToString()}."
+                message = "The file 'LICENSE' does not contain any license which is not allowed.",
+                howToFix = "Please use one of the following allowed licenses: ${allowedLicenses.joinToString()}."
         )
     }
 }
 
-ruleSet(ortResult){
+ruleSet(ortResult) {
     wrongLicenseInLicenseFileRule()
 }
