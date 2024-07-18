@@ -1,10 +1,14 @@
 val allowedLicenses = licenseClassifications.licensesByCategory["allow"].orEmpty()
 
 fun RuleSet.wrongLicenseInLicenseFileRule() = projectSourceRule("WRONG_LICENSE_IN_LICENSE_FILE_RULE") {
-
     println("XXXXXXXXXXXXXXXX TEST XXXXXXXXXXXXXX")
+    println("Allowed Licenses: ${allowedLicenses.joinToString()}")
+
     val detectedRootLicenses = projectSourceGetDetectedLicensesByFilePath("LICENSE").values.flatten().toSet()
+    println("Detected Licenses in LICENSE file: ${detectedRootLicenses.joinToString()}")
+
     val wrongLicenses = detectedRootLicenses - allowedLicenses
+    println("Wrong Licenses: ${wrongLicenses.joinToString()}")
 
     if (wrongLicenses.isNotEmpty()) {
         error(
@@ -17,4 +21,8 @@ fun RuleSet.wrongLicenseInLicenseFileRule() = projectSourceRule("WRONG_LICENSE_I
                 howToFix = "Please use one of the following allowed licenses: ${allowedLicenses.joinToString()}."
         )
     }
+}
+
+ruleSet(ortResult) {
+    wrongLicenseInLicenseFileRule()
 }
