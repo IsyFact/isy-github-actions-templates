@@ -4,7 +4,7 @@ fun RuleSet.wrongLicenseInLicenseFileRule() = projectSourceRule("WRONG_LICENSE_I
     println("XXXXXXXXXXXXXXXX TEST XXXXXXXXXXXXXX")
     println("Allowed Licenses: ${allowedLicenses.joinToString()}")
 
-    val detectedRootLicenses = projectSourceGetDetectedLicensesByFilePath("LICENSE").values.flatten().toSet()
+    val detectedRootLicenses = licenseFindings.keys
     println("Detected Licenses in LICENSE file: ${detectedRootLicenses.joinToString()}")
 
     val wrongLicenses = detectedRootLicenses - allowedLicenses
