@@ -1,28 +1,34 @@
 val allowedLicenses = licenseClassifications.licensesByCategory["allow"].orEmpty()
 
-fun RuleSet.wrongLicenseInLicenseFileRule() = projectSourceRule("WRONG_LICENSE_IN_LICENSE_FILE_RULE") {
+fun RuleSet.wrongLicenseInProject() = packageRule("WRONG_LICENSE_IN_PROJECT") {
     println("XXXXXXXXXXXXXXXX TEST XXXXXXXXXXXXXX")
     println("Allowed Licenses: ${allowedLicenses.joinToString()}")
 
-    val detectedRootLicenses = licenseFindings.keys
-    println("Detected Licenses in LICENSE file: ${detectedRootLicenses.joinToString()}")
+    // Debug-Ausgabe aller licenseFindings
+    licenseFindings.forEach { licenseFinding ->
+        println("Found License: ${licenseFinding.license} in file ${licenseFinding.location.path}")
+    }
 
-    val wrongLicenses = detectedRootLicenses - allowedLicenses
+    // Lizenzprüfung
+    val detectedLicenses = licenseFindings.map { it.license }.toSet()
+    println("Detected Licenses in Project: ${detectedLicenses.joinToString()}")
+
+    val wrongLicenses = detectedLicenses - allowedLicenses
     println("Wrong Licenses: ${wrongLicenses.joinToString()}")
 
     if (wrongLicenses.isNotEmpty()) {
         error(
-                message = "The file 'LICENSE' contains the following disallowed licenses ${wrongLicenses.joinToString()}.",
+                message = "The project contains the following disallowed licenses ${wrongLicenses.joinToString()}.",
                 howToFix = "Please use only the following allowed licenses: ${allowedLicenses.joinToString()}."
         )
-    } else if (detectedRootLicenses.isEmpty()) {
+    } else if (detectedLicenses.isEmpty()) {
         error(
-                message = "The file 'LICENSE' does not contain any license which is not allowed.",
-                howToFix = "Please use one of the following allowed licenses: ${allowedLicenses.joinToString()}."
+                message = "The project does not contain any detected licenses.",
+                howToFix = "Please ensure that licenses are properly detected and classified."
         )
     }
 }
 
 ruleSet(ortResult) {
-    wrongLicenseInLicenseFileRule()
+    wrongLicenseInProject()
 }
