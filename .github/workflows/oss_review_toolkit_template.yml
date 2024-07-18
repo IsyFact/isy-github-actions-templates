@@ -23,7 +23,7 @@ jobs:
           docker-cli-args:
             --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/templates/
             --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/config/
-          args: --output-filename ort-report_test.html
+          ort-cli-report-args: --output-filename ort-report_test.html
           report-formats: WebApp,StaticHtml,HtmlTemplate -O HtmlTemplate=template.path=/home/ort/.ort/templates/cve_summary_report_template.ftl
       - name: Download workflow artifacts
         uses: actions/download-artifact@v4
