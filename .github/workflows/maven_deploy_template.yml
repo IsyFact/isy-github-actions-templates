@@ -110,10 +110,11 @@ jobs:
             echo "ERROR: given version with value ${{ inputs.version }} does not correspond to build version $PROJECT_VERSION"
             exit 1
           fi
-      - name: Check for snapshot version
+      - name: Check for snapshot or RC version
         if: github.ref_type != 'tag'
         run: |
-          if [[ ! "${{ steps.getVersion.outputs.project-version }}" =~ "-SNAPSHOT" ]]; then
+          if [[ ! "${{ steps.getVersion.outputs.project-version }}" =~ "-SNAPSHOT" 
+          && ! "${{ steps.getVersion.outputs.project-version }}" =~ "-RC-" ]]; then
             echo "ERROR: Trying to deploy untagged version as stable release"
             exit 1
           fi
