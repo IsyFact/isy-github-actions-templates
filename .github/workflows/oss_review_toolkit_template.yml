@@ -30,5 +30,5 @@ jobs:
           path: ${{ github.workspace }}/artifacts
       - name: Log artifacts
         run: ls -R ${{ github.workspace }}/artifacts
-      - name: Unzip artifact
-        run: unzip ${{ github.workspace }}/artifacts/*.zip
+      - name: Open report
+        run: cat AsciiDoc_cve_summary_report_template.html
