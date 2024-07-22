@@ -31,4 +31,4 @@ jobs:
       - name: Log artifacts
         run: ls -R ${{ github.workspace }}/artifacts
       - name: Open report
-        run: cat AsciiDoc_cve_summary_report_template.html
+        run: cat ${{ github.workspace }}/artifacts/AsciiDoc_cve_summary_report_template.html
