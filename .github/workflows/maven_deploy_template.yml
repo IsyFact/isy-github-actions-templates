@@ -119,7 +119,7 @@ jobs:
             exit 1
           fi
       - name: Check release existence
-        if: github.ref_type != 'tag'
+        if: github.ref_type == 'tag'
         env:
           DEPLOY_SERVER_USERNAME: ${{ secrets.DEPLOY_SERVER_USER_NAME }}
           DEPLOY_SERVER_TOKEN: ${{ secrets.DEPLOY_SERVER_TOKEN }}
