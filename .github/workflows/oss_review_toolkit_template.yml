@@ -29,7 +29,9 @@ jobs:
         with:
           path: ${{ github.workspace }}/artifacts
       - name: Log artifacts
-        run: ls ${{ github.workspace }}/artifacts
+        run:
+        - ls ${{ github.workspace }}/artifacts
+        - cat ${{ github.workspace }}/artifacts/ort-results-*
       - name: Unzip artifact
         run: unzip ${{ github.workspace }}/artifacts/ort-results-*
       - name: Open report
