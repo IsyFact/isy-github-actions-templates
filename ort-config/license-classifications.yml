@@ -1,244 +1,244 @@
 categories:
-  - name: "allow"
+  - name: "permissive"
 
 categorizations:
   - id: "AGPL-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "0BSD"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CC0-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Unlicense"
     categories:
-      - "allow"
+      - "permissive"
   - id: "AFL-1.1"
     categories:
-      - "allow"
+      - "permissive"
   - id: "AFL-1.2"
     categories:
-      - "allow"
+      - "permissive"
   - id: "AFL-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "AFL-2.1"
     categories:
-      - "allow"
+      - "permissive"
   - id: "AFL-3.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "AMPAS"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Apache-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Apache-1.1"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Apache-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Artistic-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Artistic-1.0-cl8"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Artistic-1.0-Perl"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Artistic-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Beerware"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-2-Clause"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-2-Clause-FreeBSD"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-2-Clause-NetBSD"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-2-Clause-Patent"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-3-Clause"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-3-Clause-Attribution"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-3-Clause-Clear"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-3-Clause-LBNL"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-4-Clause"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-4-Clause-UC"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSD-Protection"
     categories:
-      - "allow"
+      - "permissive"
   - id: "BSL-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CC-BY-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CC-BY-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CC-BY-2.5"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CC-BY-3.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CC-BY-4.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CDLA-Permissive-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CDLA-Permissive-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "CERN-OHL-P-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "FTL"
     categories:
-      - "allow"
+      - "permissive"
   - id: "ISC"
     categories:
-      - "allow"
+      - "permissive"
   - id: "ImageMagick"
     categories:
-      - "allow"
+      - "permissive"
   - id: "JSON"
     categories:
-      - "allow"
+      - "permissive"
   - id: "LPL-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "LPL-1.02"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Libpng"
     categories:
-      - "allow"
+      - "permissive"
   - id: "libtiff"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Linux-OpenIB"
     categories:
-      - "allow"
+      - "permissive"
   - id: "MIT"
     categories:
-      - "allow"
+      - "permissive"
   - id: "MIT-CMU"
     categories:
-      - "allow"
+      - "permissive"
   - id: "MS-PL"
     categories:
-      - "allow"
+      - "permissive"
   - id: "NCSA"
     categories:
-      - "allow"
+      - "permissive"
   - id: "NIST-Software"
     categories:
-      - "allow"
+      - "permissive"
   - id: "OpenSSL"
     categories:
-      - "allow"
+      - "permissive"
   - id: "PHP-3.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "PHP-3.01"
     categories:
-      - "allow"
+      - "permissive"
   - id: "PostgreSQL"
     categories:
-      - "allow"
+      - "permissive"
   - id: "PSF-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Python-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "SGI-B-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "SGI-B-1.1"
     categories:
-      - "allow"
+      - "permissive"
   - id: "SGI-B-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "SHL-0.5"
     categories:
-      - "allow"
+      - "permissive"
   - id: "SHL-0.51"
     categories:
-      - "allow"
+      - "permissive"
   - id: "TCP-wrappers"
     categories:
-      - "allow"
+      - "permissive"
   - id: "UPL-1.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Unicode-DFS-2015"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Unicode-DFS-2016"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Unicode-TOU"
     categories:
-      - "allow"
+      - "permissive"
   - id: "W3C"
     categories:
-      - "allow"
+      - "permissive"
   - id: "W3C-19980720"
     categories:
-      - "allow"
+      - "permissive"
   - id: "W3C-20150513"
     categories:
-      - "allow"
+      - "permissive"
   - id: "WTFPL"
     categories:
-      - "allow"
+      - "permissive"
   - id: "X11"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Xnet"
     categories:
-      - "allow"
+      - "permissive"
   - id: "ZPL-1.1"
     categories:
-      - "allow"
+      - "permissive"
   - id: "ZPL-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "ZPL-2.1"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Zend-2.0"
     categories:
-      - "allow"
+      - "permissive"
   - id: "Zlib"
     categories:
-      - "allow"
+      - "permissive"
   - id: "zlib-acknowledgement"
     categories:
-      - "allow"
+      - "permissive"
