@@ -1,0 +1,17 @@
+name: Trigger Documentation Build Template
+
+on:
+  workflow_call:
+    secrets:
+      ANTORA_TRIGGER_TOKEN:
+        description: 'GitHub token to trigger the documentation build'
+        required: true
+
+jobs:
+  TriggerDocsBuild:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
+    steps:
+      - name: Trigger documentation build
+        run: gh workflow run antora_build.yml -R IsyFact/isyfact.github.io
