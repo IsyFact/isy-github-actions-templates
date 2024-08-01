@@ -23,8 +23,8 @@ jobs:
       - name: Update antora.yml with the new version
         run: |
           version=${{ env.RELEASE_VERSION }}
-          sed -i "s/^version: '.*'/version: '$version'/" ${{ env.ANTORA_PATH }}
-          sed -i "s/^display_version: '.*'/display_version: '$version'/" ${{ env.ANTORA_PATH }}
+          sed -i "s|^version: *'.*'|version: '$version'|" ${{ env.ANTORA_PATH }}
+          sed -i "s|^display_version: *'.*'|display_version: '$version'|" ${{ env.ANTORA_PATH }}
 
       - name: Commit and push antora.yml
         env:
