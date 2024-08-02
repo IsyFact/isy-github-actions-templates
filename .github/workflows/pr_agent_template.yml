@@ -1,7 +1,13 @@
 name: PR-Agent
 on:
-  pull_request:
-    types: [opened, reopened, ready_for_review]
+  workflow_call:
+    secrets:
+      OPENAI_KEY:
+        description: 'API key for ChatGPT'
+        required: true
+      GITHUB_TOKEN:
+        description: 'GitHub token'
+        required: true
   issue_comment:
 jobs:
   pr_agent_job:
