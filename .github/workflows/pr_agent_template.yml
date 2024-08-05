@@ -1,11 +1,12 @@
 name: PR-Agent
+
 on:
   workflow_call:
     secrets:
       OPENAI_KEY:
         description: 'API key for ChatGPT'
         required: true
-  issue_comment:
+
 jobs:
   pr_agent_job:
     if: ${{ github.event.sender.type != 'Bot' }}
