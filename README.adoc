@@ -21,7 +21,7 @@ Die berechnete Version ist als Ausgabe `next-version` für andere Jobs in einem 
 |`next-version` |Nein |  |Überspringt die Berechnung der Version und gibt stattdessen die angegebene Version mit `SNAPSHOT` Suffix aus
 |===
 
-=== Verwenden der berechneten Version in anderen Jobs
+==== Verwenden der berechneten Version in anderen Jobs
 
 [source,yaml]
 [source]
@@ -144,6 +144,12 @@ TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input `deploy
 === OSS Review Toolkit Template
 Das Template `oss_review_toolki_template.yml` stellt einen Job zur Verfügung, welcher das OSS Review Toolkit aufruft. Dieses scannt alle Abhängigkeiten im Projekt und prüft sie auf CVEs. Weiterhin werden alle Lizenzen analysiert und gegebenenfalls auf Regelverstöße überprüft. All dies wird dann in verschiedenen Reports mittels Pipeline-Artefakt ausgegeben.
 Das Template hat keinerlei Parameter.
+
+=== Docs Build Template
+Das Template `docs_build_template.yml` ist ermöglicht den automatisierten Start von Dokumentations-Builds für Antora-Projekte. Es nutzt das Event `workflow_call`, um den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` über die GitHub CLI auszuführen. Dafür ist das Secret `ANTORA_TRIGGER_TOKEN` erforderlich, das die notwendigen Berechtigungen zum Authentifizieren und Auslösen des Workflows hat. Diese Automatisierung vereinfacht die Integration von Dokumentationsaktualisierungen in die CI/CD-Pipeline und sorgt für eine effiziente Bereitstellung von Dokumentationsänderungen.
+
+=== Update Antora Version Template
+Das Template `update_antora_version_template.yml` dient dazu, die Version in der Datei `antora.yml` automatisch zu aktualisieren, wenn ein neuer Release-Branch erstellt wird. Der Workflow nutzt das Event `workflow_call`, um den `antora.yml`-Pfad zu setzen, die Versionsdetails aus dem Branch-Namen zu extrahieren und die Datei zu aktualisieren. Danach werden die Änderungen in den aktuellen Branch gepusht. Dies automatisiert den Prozess der Versionsverwaltung in der Dokumentation und sorgt für Konsistenz und Effizienz.
 
 == Verwendung der Templates
 
@@ -275,9 +281,26 @@ NOTE: In isy-web werden einige Konfigurationsdateien über den LFS gespeichert, 
 
 TIP: `$GITHUB_REF_NAME` ist eine vordefinierte Variable innerhalb von GitHub Actions und enthält den Namen des zugehörigen Tags eines Releases.
 
-=== OSS Review Toolkit
+=== OSS Review Toolkit Template
 
 [width="40%",cols="15%,10%, options="header",]
 |===
 ^|Repository ^|Branch ^|isyfact-standards
 ^|master
+|===
+
+=== Docs Build Template
+|===
+|Repository       |Branch
+
+|isy-datetime      |develop
+|isy-sonderzeichen |develop
+|===
+
+=== Update Antora Version Template
+|===
+|Repository       |Branch
+
+|isy-datetime      |develop
+|isy-sonderzeichen |develop
+|===
