@@ -1,3 +1,8 @@
+# 1.4.0
+- `IFS-3611`: 
+  - Hinzufügen des Workflow-Templates `pr_agent_template.yml` zur Automatisierung von PR-Analyse mit dem CodiumAI PR-Agent
+  - Hinzufügen der PR-Agent `pr_agent.yml` und Commit Message Checker `commit_message_checker.yml` Workflows
+
 # v1.3.0
 - `IFS-3727`: Überprüfung von Snapshot als auch RC-Versionen, Überprüfung von Release-Existenz für Tags in `maven_deploy_template.yml`
 
