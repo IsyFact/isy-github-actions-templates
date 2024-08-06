@@ -1,4 +1,4 @@
-name: PR-Agent
+name: PR-Agent Template
 
 on:
   workflow_call:
@@ -8,19 +8,16 @@ on:
         required: true
 
 jobs:
-  pr_agent_job:
+  PrAgent:
     if: ${{ github.event.sender.type != 'Bot' }}
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
       contents: write
-    name: Run pr agent on every pull request, respond to user comments
     steps:
-      - name: PR Agent action step
-        id: pragent
-        uses: Codium-ai/pr-agent@main
+      - name: Run PR-Agent
+        uses: Codium-ai/pr-agent@v0.23
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
