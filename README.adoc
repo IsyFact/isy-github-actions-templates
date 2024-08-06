@@ -145,6 +145,11 @@ TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input `deploy
 Das Template `oss_review_toolki_template.yml` stellt einen Job zur Verfügung, welcher das OSS Review Toolkit aufruft. Dieses scannt alle Abhängigkeiten im Projekt und prüft sie auf CVEs. Weiterhin werden alle Lizenzen analysiert und gegebenenfalls auf Regelverstöße überprüft. All dies wird dann in verschiedenen Reports mittels Pipeline-Artefakt ausgegeben.
 Das Template hat keinerlei Parameter.
 
+=== PR-Agent Template
+Die Template `pr_agent_template.yml` automatisiert PR-Analyse und Feedback unter Verwendung des CodiumAI PR-Agenten und OpenAIs ChatGPT. Ausgelöst durch einen `workflow_call`, wird er nur bei von Menschen initiierten Events ausgeführt. Der Workflow benötigt einen OpenAI-API-Schlüssel `OPENAI_KEY` und ein GitHub-Token `GITHUB_TOKEN` als Secrets, die es ihm ermöglichen, sich zu authentifizieren und mit GitHub- und OpenAI-Diensten zu interagieren. Es verfügt über Schreibrechte für Issues, Pull-Requests und Repository-Inhalte, sodass es Überprüfungen und Aktualisierungen effizient automatisieren kann. Dieser Arbeitsablauf steigert die Produktivität, indem er KI zur Erledigung von Routineaufgaben einsetzt und es den Entwicklern ermöglicht, sich auf komplexere Arbeiten zu konzentrieren.
+
+Standardmäßig werden die Befehle `/describe`, `/review`, `/improve` ausgeführt. Eine vollständige Liste der Befehle und ihrer Beschreibungen können unter https://pr-agent-docs.codium.ai/tools/[PR-Agent Documentation/Tools] gefunden werden oder durch Kommentieren des Befehls `/help` im PR.
+
 === Docs Build Template
 Das Template `docs_build_template.yml` ist ermöglicht den automatisierten Start von Dokumentations-Builds für Antora-Projekte. Es nutzt das Event `workflow_call`, um den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` über die GitHub CLI auszuführen. Dafür ist das Secret `ANTORA_TRIGGER_TOKEN` erforderlich, das die notwendigen Berechtigungen zum Authentifizieren und Auslösen des Workflows hat. Diese Automatisierung vereinfacht die Integration von Dokumentationsaktualisierungen in die CI/CD-Pipeline und sorgt für eine effiziente Bereitstellung von Dokumentationsänderungen.
 
@@ -286,10 +291,20 @@ TIP: `$GITHUB_REF_NAME` ist eine vordefinierte Variable innerhalb von GitHub Act
 [width="40%",cols="15%,10%, options="header",]
 |===
 ^|Repository ^|Branch ^|isyfact-standards
+
 ^|master
 |===
 
+
+=== PR-Agent Template
+|===
+|Repository       |Branch
+
+|isy-datetime      |develop
+|isy-github-actions-template |main
+|===
 === Docs Build Template
+
 |===
 |Repository       |Branch
 

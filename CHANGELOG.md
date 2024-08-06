@@ -1,4 +1,7 @@
 # v1.4.0
+- `IFS-3611`: 
+  - Hinzufügen des Workflow-Templates `pr_agent_template.yml` zur Automatisierung von PR-Analyse mit dem CodiumAI PR-Agent
+  - Hinzufügen der PR-Agent `pr_agent.yml` und Commit Message Checker `commit_message_checker.yml` Workflows
 - `IFS-3731`: Hinzufügen der Workflow-Templates:
   - `docs_build_template.yml`: Auslösen der Dokumentation-Build im zentralen Antora Playbook
   - `update_antora_version_template.yml`: Automatisches Aktualisieren der Antora-Version in `antora.yml`
