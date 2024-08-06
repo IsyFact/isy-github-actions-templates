@@ -31,3 +31,13 @@ jobs:
       - name: Log artifacts
         run: |
           ls -R ${{ github.workspace }}/artifacts
+      - name: Upload report artifact to GitHub Pages
+  upload_artifact:
+    environment:
+      name: github-pages
+      url: ${{ isyfact.github.io/cve-reports }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
