@@ -21,7 +21,7 @@ Die berechnete Version ist als Ausgabe `next-version` für andere Jobs in einem 
 |`next-version` |Nein |  |Überspringt die Berechnung der Version und gibt stattdessen die angegebene Version mit `SNAPSHOT` Suffix aus
 |===
 
-=== Verwenden der berechneten Version in anderen Jobs
+==== Verwenden der berechneten Version in anderen Jobs
 
 [source,yaml]
 [source]
@@ -149,6 +149,12 @@ Das Template hat keinerlei Parameter.
 Die Template `pr_agent_template.yml` automatisiert PR-Analyse und Feedback unter Verwendung des CodiumAI PR-Agenten und OpenAIs ChatGPT. Ausgelöst durch einen `workflow_call`, wird er nur bei von Menschen initiierten Events ausgeführt. Der Workflow benötigt einen OpenAI-API-Schlüssel `OPENAI_KEY` und ein GitHub-Token `GITHUB_TOKEN` als Secrets, die es ihm ermöglichen, sich zu authentifizieren und mit GitHub- und OpenAI-Diensten zu interagieren. Es verfügt über Schreibrechte für Issues, Pull-Requests und Repository-Inhalte, sodass es Überprüfungen und Aktualisierungen effizient automatisieren kann. Dieser Arbeitsablauf steigert die Produktivität, indem er KI zur Erledigung von Routineaufgaben einsetzt und es den Entwicklern ermöglicht, sich auf komplexere Arbeiten zu konzentrieren.
 
 Standardmäßig werden die Befehle `/describe`, `/review`, `/improve` ausgeführt. Eine vollständige Liste der Befehle und ihrer Beschreibungen können unter https://pr-agent-docs.codium.ai/tools/[PR-Agent Documentation/Tools] gefunden werden oder durch Kommentieren des Befehls `/help` im PR.
+
+=== Docs Build Template
+Das Template `docs_build_template.yml` ist ermöglicht den automatisierten Start von Dokumentations-Builds für Antora-Projekte. Es nutzt das Event `workflow_call`, um den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` über die GitHub CLI auszuführen. Dafür ist das Secret `ANTORA_TRIGGER_TOKEN` erforderlich, das die notwendigen Berechtigungen zum Authentifizieren und Auslösen des Workflows hat. Diese Automatisierung vereinfacht die Integration von Dokumentationsaktualisierungen in die CI/CD-Pipeline und sorgt für eine effiziente Bereitstellung von Dokumentationsänderungen.
+
+=== Update Antora Version Template
+Das Template `update_antora_version_template.yml` dient dazu, die Version in der Datei `antora.yml` automatisch zu aktualisieren, wenn ein neuer Release-Branch erstellt wird. Der Workflow nutzt das Event `workflow_call`, um den `antora.yml`-Pfad zu setzen, die Versionsdetails aus dem Branch-Namen zu extrahieren und die Datei zu aktualisieren. Danach werden die Änderungen in den aktuellen Branch gepusht. Dies automatisiert den Prozess der Versionsverwaltung in der Dokumentation und sorgt für Konsistenz und Effizienz.
 
 == Verwendung der Templates
 
@@ -289,10 +295,27 @@ TIP: `$GITHUB_REF_NAME` ist eine vordefinierte Variable innerhalb von GitHub Act
 ^|master
 |===
 
+
 === PR-Agent Template
 |===
 |Repository       |Branch
 
 |isy-datetime      |develop
 |isy-github-actions-template |main
+|===
+=== Docs Build Template
+
+|===
+|Repository       |Branch
+
+|isy-datetime      |develop
+|isy-sonderzeichen |develop
+|===
+
+=== Update Antora Version Template
+|===
+|Repository       |Branch
+
+|isy-datetime      |develop
+|isy-sonderzeichen |develop
 |===
