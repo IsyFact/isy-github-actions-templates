@@ -1,4 +1,4 @@
 Der aktuelle ORT-Report
 
 
-include:: AsciiDoc_cve_summary_report_template.html
+include:: AsciiDoc_cve_summary_report_template.html[]
