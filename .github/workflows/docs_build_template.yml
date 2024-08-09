@@ -30,3 +30,39 @@ jobs:
           run_id: ${{ steps.trigger_build.outputs.run_id }}
           run_timeout_seconds: 300 # 5 minutes (optional)
           poll_interval_ms: 5000 # 5 seconds (optional)
+
+      - name: Fetch and extract Build Documentation logs
+        env:
+          GH_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
+          OWNER: IsyFact
+          REPO: isyfact.github.io
+          RUN_ID: ${{ steps.trigger_build.outputs.run_id }}
+        run: |
+          # Fetch the logs for the given run ID using GitHub CLI
+          echo "Fetching logs for run ID: $RUN_ID from repository $OWNER/$REPO"
+          
+          # Use gh CLI to download the logs
+          gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs > logs.zip
+  
+          # Unzip the logs
+          unzip logs.zip -d logs
+          
+          # Find and print logs for the 'Build Documentation' step
+          build_log_file=$(find logs -type f -name "*Build Documentation*")
+          
+          if [ -z "$build_log_file" ]; then
+            echo "Build Documentation logs not found."
+          else
+            echo "Build Documentation logs found: $build_log_file"
+            
+             # Remove timestamps from the log file
+            echo "Processing logs to remove timestamps..."
+            sed 's/^[0-9TZ:\.-]*Z //g' "$build_log_file" > "$build_log_file"_cleaned  
+        
+            # Display the cleaned logs
+            echo "Cleaned Build Documentation logs:"
+            cat "$build_log_file"_cleaned
+          fi
