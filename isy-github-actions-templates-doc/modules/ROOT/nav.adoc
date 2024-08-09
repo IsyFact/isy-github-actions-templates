@@ -1,2 +1,2 @@
 ** ORT Reports
-*** xref:reports/reports.adoc[Reports]
+*** xref:reports/AsciiDoc_cve_summary_report_template[Reports]
