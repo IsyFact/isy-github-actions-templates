@@ -2,6 +2,12 @@ name: Trigger Documentation Build Template
 
 on:
   workflow_call:
+    inputs:
+      log_level:
+        description: 'Log level for the Antora build (debug, info, warn, error)'
+        required: false
+        type: string
+        default: 'debug'
     secrets:
       ANTORA_TRIGGER_TOKEN:
         description: 'GitHub token to trigger the documentation build'
@@ -20,6 +26,7 @@ jobs:
           repo: isyfact.github.io
           owner: IsyFact
           workflow: antora_build.yml
+          workflow_inputs: '{ "log_level": "${{ inputs.log_level }}" }'
 
       - name: Wait for documentation build completion (Run ID - ${{ steps.trigger_build.outputs.run_id }})
         uses: codex-/await-remote-run@v1.11.0
