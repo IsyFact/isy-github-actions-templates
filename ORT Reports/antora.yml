@@ -1,5 +1,5 @@
 name: isy-github-actions-template-doc
-title: isy-github-actions-template-doc
+title: ORT Reports
 version: '4.0.0 SNAPSHOT'
 display_version: '4.0.0 SNAPSHOT'
 start_page: ROOT:konzept/master.adoc
