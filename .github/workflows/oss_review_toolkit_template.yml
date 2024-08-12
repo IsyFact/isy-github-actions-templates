@@ -24,3 +24,33 @@ jobs:
             --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/templates/
             --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/config/
           report-formats: WebApp,StaticHtml,HtmlTemplate -O HtmlTemplate=template.path=/home/ort/.ort/templates/cve_summary_report_template.ftl
+      - name: Download workflow artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ${{ github.workspace }}/artifacts
+      - name: Log artifacts
+        run: |
+          ls -R ${{ github.workspace }}/artifacts
+  upload_artifact:
+    environment:
+      name: github-pages
+      url: ${{ isyfact.github.io/cve-reports }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload the artifact
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: AsciiDoc_cve_summary_report_template.adoc
+          path: ${{ github.workspace }}/artifacts
+      - name: Deploy to target repository
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ github.workspace }}/artifacts
+          destination_repo: IsyFact/isy-github-actions-templates  # Ziel-Repository angeben
+          destination_branch: mariusarltmsg-patch-1  # Ziel-Branch angeben
+          destination_dir: 'ORT Reports/modules/ROOT/pages/isy-github-actions-templates/'
+#          user_name: ''
+#          user_email: 'actions@github.com'
+          keep_files: true
