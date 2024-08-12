@@ -1,1 +1,1 @@
-** xref:reports/reports.adoc[Reports]
+** xref:isy-github-actions-templates/reports.adoc[Reports]
