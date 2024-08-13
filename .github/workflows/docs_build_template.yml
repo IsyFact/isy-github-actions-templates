@@ -73,24 +73,120 @@ jobs:
           if [ -z "$build_log_file" ]; then
             echo "Build Documentation logs not found."
           else
+            
             echo "Build Documentation logs found: $build_log_file"
             
-             # Remove timestamps from the log file
-            echo "Processing logs to unwanted sections, timestamps, and ANSI codes..."
-            awk '/Processing JSON logs.../{flag=1} flag' "$build_log_file" | sed 's/^[0-9TZ:\.-]*Z //g' | sed -E 's/\x1b\[[0-9;]*m//g' > cleaned_logs.txt
+            echo "Processing logs to remove unwanted sections and timestamps..."
+            awk '/Processing JSON logs.../{flag=1} flag' "$build_log_file" | sed 's/^[0-9TZ:\.-]*Z //g' > temp_cleaned_logs.txt
           
             # Display the cleaned logs
-            echo "Cleaned Build Documentation logs:"
-            cat cleaned_logs.txt
+            cat temp_cleaned_logs.txt
+          
+            set -x
+          
+            # Remove ANSI escape codes 
+            sed -E 's/\x1b\[[0-9;]*m//g' temp_cleaned_logs.txt > cleaned_logs.txt
           fi
 
-      - name: Comment logs on PR
-        uses: thollander/actions-comment-pull-request@v2
+      - name: Upload cleaned logs
+        uses: actions/upload-artifact@v4.3.6
         with:
-          filePath: cleaned_logs.txt
+          name: cleaned_logs
+          path: cleaned_logs.txt
 
-      - name: Check exit code in logs and fail if exit code is 1
-        run: |
-          if grep -q "exit code 1" cleaned_logs.txt; then
+      - name: Format and generate logs markdown
+        run: |  
+          input_file="cleaned_logs.txt"
+          output_file="formatted_logs.md"
+          echo "## Build Documentation Logs 📜✨" > "$output_file"
+          
+          # Variables to track the block state
+          in_block=false
+          completion_status=""
+          
+          # Read the cleaned logs line by line
+          while IFS= read -r line; do
+            case "$line" in
+              Source:*)
+                # Close previous details block if it's not the first one
+                if [ "$in_block" = true ]; then
+                  echo -e "</details>\n" >> "$output_file"
+                fi
+                # Start a new details block for a new source
+                echo "<details>" >> "$output_file"
+                echo "<summary><strong>⭐ $line</strong></summary>" >> "$output_file"
+                echo "" >> "$output_file"  # Add a new line for formatting
+                in_block=true
+                ;;
+              INFO:*)
+                # Process INFO logs
+                message="🟢 **INFO**"
+                # Extract the description and the specific reference separately
+                description=$(echo "$line" | cut -d':' -f2 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                reference=$(echo "$line" | cut -d':' -f3- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                ;;
+              ERROR:*)
+                # Process ERROR logs
+                message="🔴 **ERROR**"
+                description=$(echo "$line" | cut -d':' -f2 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                reference=$(echo "$line" | cut -d':' -f3- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                ;;
+              WARN:*)
+                # Process WARN logs
+                message="🟡 **WARN**"
+                description=$(echo "$line" | cut -d':' -f2 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                reference=$(echo "$line" | cut -d':' -f3- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                ;;
+              DEBUG:*)
+                # Process DEBUG logs
+                message="🔵 **DEBUG**"
+                description=$(echo "$line" | cut -d':' -f2 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                reference=$(echo "$line" | cut -d':' -f3- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+                ;;
+              "Antora documentation build completed successfully.")
+                # Set the completion status to success
+                completion_status="✅🎉🚀 Antora documentation build completed successfully. "
+                ;;
+              "Antora documentation build failed.")
+                # Set the completion status to failure without exit code
+                completion_status="❌🔥👀 Antora documentation build failed. "
+                ;;
+            esac
+          
+            # Process log details and file path if a message was set
+            if [ -n "$message" ]; then
+              # Read the next line to get the file path
+              if IFS= read -r next_line; then
+                # Extract the file path, removing the "File:" prefix
+                file_path=$(echo "$next_line" | sed 's/^  File: //')
+                # Append the log entry with bullet point and formatting
+                echo "- ${message}: ${description}: \`${reference}\`" >> "$output_file"
+                echo "    - _File:_ \`${file_path}\`" >> "$output_file"
+              fi
+              message=""
+            fi
+          done < "$input_file"
+          
+          # Ensure the last details block is closed
+          if [ "$in_block" = true ]; then
+            echo "</details>" >> "$output_file"
+          fi
+          
+          # Append the completion status at the end
+          echo -e "\n${completion_status}" >> "$output_file"
+
+      - name: Comment logs on PR
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: thollander/actions-comment-pull-request@v2.5.0
+        with:
+          filePath: formatted_logs.md
+          comment_tag: antora-logs
+
+      - name: Fail the workflow if Antora build fails
+        run: |          
+          if grep -q "Antora documentation build failed." cleaned_logs.txt; then
+            echo -e "\033[0;31mAntora documentation build failed.\033[0m"
             exit 1
+          else
+            echo -e "\033[0;32mAntora documentation build completed successfully.\033[0m"
           fi
