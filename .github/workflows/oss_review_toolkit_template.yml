@@ -32,6 +32,7 @@ jobs:
         run: |
           ls -R ${{ github.workspace }}/artifacts
   upload_artifact:
+    needs: ort
     runs-on: ubuntu-latest
     steps:
       - name: Upload the artifact
@@ -46,8 +47,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ${{ github.workspace }}/artifacts
           destination_repo: IsyFact/isy-github-actions-templates  # Ziel-Repository angeben
-          destination_branch: main_OSS_Review_Toolkit  # Ziel-Branch angeben
-          destination_dir: 'ORT Reports/modules/ROOT/pages/isy-github-actions-templates/'
 #          user_name: ''
 #          user_email: 'actions@github.com'
           keep_files: true
