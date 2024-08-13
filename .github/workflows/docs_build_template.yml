@@ -76,9 +76,9 @@ jobs:
             echo "Build Documentation logs found: $build_log_file"
             
              # Remove timestamps from the log file
-            echo "Processing logs to remove timestamps..."
-            sed 's/^[0-9TZ:\.-]*Z //g' "$build_log_file" > cleaned_logs.txt
-            
+            echo "Processing logs to unwanted sections, timestamps, and ANSI codes..."
+            awk '/Processing JSON logs.../{flag=1} flag' "$build_log_file" | sed 's/^[0-9TZ:\.-]*Z //g' | sed -E 's/\x1b\[[0-9;]*m//g' > cleaned_logs.txt
+          
             # Display the cleaned logs
             echo "Cleaned Build Documentation logs:"
             cat cleaned_logs.txt
