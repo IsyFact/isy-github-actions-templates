@@ -77,14 +77,20 @@ jobs:
             
              # Remove timestamps from the log file
             echo "Processing logs to remove timestamps..."
-            sed 's/^[0-9TZ:\.-]*Z //g' "$build_log_file" > "${build_log_file}_cleaned"
-        
+            sed 's/^[0-9TZ:\.-]*Z //g' "$build_log_file" > cleaned_logs.txt
+            
             # Display the cleaned logs
             echo "Cleaned Build Documentation logs:"
-            cat "${build_log_file}_cleaned"
+            cat cleaned_logs.txt
           fi
-          
-          # Fail the step if "exit code 1" is in the cleaned logs
-          if grep -q "exit code 1" "${build_log_file}_cleaned"; then
-            exit 1  
+
+      - name: Comment logs on PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: cleaned_logs.txt
+
+      - name: Check exit code in logs and fail if exit code is 1
+        run: |
+          if grep -q "exit code 1" cleaned_logs.txt; then
+            exit 1
           fi
