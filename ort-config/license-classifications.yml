@@ -2,6 +2,9 @@ categories:
   - name: "permissive"
 
 categorizations:
+  - id: "404"
+    categories:
+      - "permissive"
   - id: "AGPL-1.0"
     categories:
       - "permissive"
