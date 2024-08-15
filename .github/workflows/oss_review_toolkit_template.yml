@@ -15,8 +15,8 @@ jobs:
           curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.2.0/ort-config/cve_summary_report_template.ftl
       - name: Download license management config files
         run: |
-          curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1/ort-config/license-classifications.yml
-          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/mariusarltmsg-patch-1/ort-config/evaluator.rules.kts
+          curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/feature/main_OSS_Review_Toolkit/ort-config/license-classifications.yml
+          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/feature/main_OSS_Review_Toolkit/ort-config/evaluator.rules.kts
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@v1
         with:
@@ -31,22 +31,22 @@ jobs:
       - name: Log artifacts
         run: |
           ls -R ${{ github.workspace }}/artifacts
-  upload_artifact:
-    needs: ort
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload the artifact
-        id: upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: AsciiDoc_cve_summary_report_template.adoc
-          path: ${{ github.workspace }}/artifacts
-      - name: Deploy to target repository
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ github.workspace }}/artifacts
-          destination_repo: IsyFact/isy-github-actions-templates  # Ziel-Repository angeben
-#          user_name: ''
-#          user_email: 'actions@github.com'
-          keep_files: true
+#  upload_artifact:
+#    needs: ort
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Upload the artifact
+#        id: upload
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: AsciiDoc_cve_summary_report_template.adoc
+#          path: ${{ github.workspace }}/artifacts
+#      - name: Deploy to target repository
+#        uses: peaceiris/actions-gh-pages@v4
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ${{ github.workspace }}/artifacts
+#          destination_repo: IsyFact/isy-github-actions-templates  # Ziel-Repository angeben
+##          user_name: ''
+##          user_email: 'actions@github.com'
+#          keep_files: true
