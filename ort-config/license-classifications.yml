@@ -1,6 +1,8 @@
 categories:
   - name: "permissive"
 
+404:
+
 categorizations:
   - id: "404"
     categories:
