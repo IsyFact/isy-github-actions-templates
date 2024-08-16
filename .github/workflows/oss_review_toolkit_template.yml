@@ -35,6 +35,7 @@ jobs:
           ls -R ${{ github.workspace }}/ort-reports
       - name: Move report to correct directory
         run: |
+          rm -f ort-reports/AsciiDoc_cve_summary_report_template.html
           mv ort-reports/ort-results-isyfactstandards-*/AsciiDoc_cve_summary_report_template.html ort-reports/
       - name: Commit and push report
         env:
