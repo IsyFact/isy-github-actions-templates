@@ -32,10 +32,13 @@ jobs:
           path: ort-reports
       - name: Log artifacts
         run: |
+          echo 'pwd'
           echo $(pwd)
+          echo 'git_repo_path'
           echo $GIT_REPO_PATH
+          echo 'git_repo_path_repo'
           echo $GIT_REPO_PATH:/repo
           ls -R ${{ github.workspace }}/ort-reports
-      - name: Unzip artifacts
+      - name: Move report to directory
         run: |
-          unzip 'ort-reports/ort-results*' -d ort-reports
+          docker mount type=bind,source=${{ github.workspace }}/ort-reports,target=$GIT_REPO_PATH/ort-reports
