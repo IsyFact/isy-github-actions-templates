@@ -39,6 +39,15 @@ jobs:
           echo 'git_repo_path_repo'
           echo $GIT_REPO_PATH:/repo
           ls -R ${{ github.workspace }}/ort-reports
-      - name: Move report to directory
+#      - name: Move report to directory
+#        run: |
+#          docker mount type=bind,source=${{ github.workspace }}/ort-reports,target=$GIT_REPO_PATH/ort-reports
+      - name: Commit and push report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker mount type=bind,source=${{ github.workspace }}/ort-reports,target=$GIT_REPO_PATH/ort-reports
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add ort-reports
+          git commit -m "docs: uploaded latest ort report"
+          git push origin HEAD:${{ github.ref }}
