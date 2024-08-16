@@ -32,22 +32,16 @@ jobs:
           path: ort-reports
       - name: Log artifacts
         run: |
-          echo 'pwd'
-          echo $(pwd)
-          echo 'git_repo_path'
-          echo $GIT_REPO_PATH
-          echo 'git_repo_path_repo'
-          echo $GIT_REPO_PATH:/repo
           ls -R ${{ github.workspace }}/ort-reports
-#      - name: Move report to directory
-#        run: |
-#          docker mount type=bind,source=${{ github.workspace }}/ort-reports,target=$GIT_REPO_PATH/ort-reports
+      - name: Move report to correct directory
+        run: |
+          mv ort-reports/ort-results-isyfactstandards-*/AsciiDoc_cve_summary_report_template.html ort-reports/
       - name: Commit and push report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add ort-reports
+          git add AsciiDoc_cve_summary_report_template.html
           git commit -m "docs: uploaded latest ort report"
           git push origin HEAD:${{ github.ref }}
