@@ -32,5 +32,8 @@ jobs:
           path: ${{ github.workspace }}/ort-reports
       - name: Log artifacts
         run: |
-          unzip ${{ github.workspace }}/ort-reports
+          echo $(pwd)
+          echo $GIT_REPO_PATH:/repo
+          echo $GIT_REPO_PATH:/repo
+          docker run -v $(pwd)
           ls -R ${{ github.workspace }}/ort-reports
