@@ -83,17 +83,9 @@ jobs:
             # Display the cleaned logs
             cat temp_cleaned_logs.txt
           
-            set -x
-          
             # Remove ANSI escape codes 
             sed -E 's/\x1b\[[0-9;]*m//g' temp_cleaned_logs.txt > cleaned_logs.txt
           fi
-
-      - name: Upload cleaned logs
-        uses: actions/upload-artifact@v4.3.6
-        with:
-          name: cleaned_logs
-          path: cleaned_logs.txt
 
       - name: Format and generate logs markdown
         run: |  
