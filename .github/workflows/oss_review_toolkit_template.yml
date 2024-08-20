@@ -44,7 +44,6 @@ jobs:
           xmlstarlet ed \
                       -d "//meta" \
                       -d "//style" \
-#                      -d "//title" \
                       -d "//link" \
                       -m "//div[@id='footer-text']/text()" "//head" \
                       -d "//div[@id='footer']" \
