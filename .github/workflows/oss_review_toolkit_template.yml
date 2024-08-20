@@ -53,7 +53,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git pull
           git add ort-reports/AsciiDoc_cve_summary_report_template.html
+          git pull
           git commit -m "docs: uploaded latest ort report"
           git push origin HEAD:${{ github.ref }}
