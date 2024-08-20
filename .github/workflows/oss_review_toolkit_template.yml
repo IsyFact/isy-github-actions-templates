@@ -36,6 +36,8 @@ jobs:
           mv ort-reports/ort-results-*/scan-report-web-app.html ort-reports/
       - name: Install xmlstarlet
         run: sudo apt-get install -y xmlstarlet
+      - name: Install tidy
+        run: sudo apt-get install -y tidy
       - name: Edit report file
         run: |
           tidy -q -indent -asxhtml --tidy-mark no -wrap 0 -output ort-reports/AsciiDoc_cve_summary_report_template_tidy.html
