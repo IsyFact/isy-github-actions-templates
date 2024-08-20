@@ -1,1 +1,0 @@
-** xref:isy-github-actions-templates/reports.adoc[Reports]

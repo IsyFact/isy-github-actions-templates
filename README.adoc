@@ -290,11 +290,15 @@ TIP: `$GITHUB_REF_NAME` ist eine vordefinierte Variable innerhalb von GitHub Act
 
 [width="40%",cols="15%,10%, options="header",]
 |===
-^|Repository ^|Branch ^|isyfact-standards
+^|Repository ^|Branch
 
-^|master
+^|isyfact-standards ^|master/main, 2x, 3x
+^|isy-datetime      ^|master/main
+^|isy-security      ^|master/main
+^|isy-web      ^|master/main
+^|isy-sonderzeichen      ^|master/main
+
 |===
-
 
 === PR-Agent Template
 |===
