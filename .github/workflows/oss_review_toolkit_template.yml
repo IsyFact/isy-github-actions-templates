@@ -35,22 +35,18 @@ jobs:
           mv ort-reports/ort-results-*/AsciiDoc_cve_summary_report_template.html ort-reports/
           mv ort-reports/ort-results-*/scan-report-web-app.html ort-reports/
       - name: Install sed
-        run: sudo apt-get install sed
+        run: sudo apt-get -y install sed
       - name: Edit report file
         run: |
-#           extract "last updated" string from footer and write it to a text file
           sed -n '/<div id="footer-text">/,/<\/div>/ {
           /<div id="footer-text">/d
           /<\/div>/d
           p
           }' ort-reports/AsciiDoc_cve_summary_report_template.html > ort-reports/last_updated_text.txt
-#           remove the empty footer
           sed -e '/<div id="footer-text">/,/<\/div>/d' ort-reports/AsciiDoc_cve_summary_report_template.html
-#           write the "last updated" string in the head node
           sed -e '/<\/head>/ {
           r ort-reports/last_updated_text.txt
           }' ort-reports/AsciiDoc_cve_summary_report_template.html
-#          mv ort-reports/AsciiDoc_cve_summary_report_template_modified.html ort-reports/AsciiDoc_cve_summary_report_template.html
       - name: Commit and push report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
