@@ -38,6 +38,7 @@ jobs:
         run: sudo apt-get install -y xmlstarlet
       - name: Edit report file
         run: |
+          tidy -q -indent -asxhtml --tidy-mark no -wrap 0 -output ort-reports/AsciiDoc_cve_summary_report_template_tidy.html
           xmlstarlet ed \
                       -d "//meta" \
                       -d "//style" \
@@ -45,7 +46,7 @@ jobs:
                       -d "//link" \
                       -m "//div[@id='footer-text']/text()" "//head" \
                       -d "//div[@id='footer']" \
-                      ort-reports/AsciiDoc_cve_summary_report_template.html \> ort-reports/AsciiDoc_cve_summary_report_template_modified.html
+                      ort-reports/AsciiDoc_cve_summary_report_template_tidy.html \> ort-reports/AsciiDoc_cve_summary_report_template_modified.html
           mv ort-reports/AsciiDoc_cve_summary_report_template_modified.html ort-reports/AsciiDoc_cve_summary_report_template.html
       - name: Commit and push report
         env:
