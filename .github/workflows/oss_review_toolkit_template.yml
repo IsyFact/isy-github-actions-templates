@@ -39,7 +39,7 @@ jobs:
       - name: Install tidy
         run: sudo apt-get install -y tidy
       - name: Make html file well-formed
-        run: tidy -indent --tidy-mark no -wrap 0 -output ort-reports/AsciiDoc_cve_summary_report_template_tidy.html
+        run: tidy -indent --tidy-mark no -wrap 0 -output ort-reports/AsciiDoc_cve_summary_report_template_tidy.html ort-reports/AsciiDoc_cve_summary_report_template.html
       - name: Edit report file
         run: |
           xmlstarlet ed \
