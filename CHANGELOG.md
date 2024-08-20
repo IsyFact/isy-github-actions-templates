@@ -1,3 +1,7 @@
+# v1.5.0
+- `IFS-3956`:
+  - Anpassung des Workflows `oss_review_toolkit_template.yml` zur Veröffentlichung der Reports
+
 # v1.4.0
 - `IFS-3611`: 
   - Hinzufügen des Workflow-Templates `pr_agent_template.yml` zur Automatisierung von PR-Analyse mit dem CodiumAI PR-Agent

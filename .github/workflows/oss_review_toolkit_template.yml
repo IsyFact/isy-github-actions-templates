@@ -12,12 +12,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Download report template
         run: |
-          curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.2.0/ort-config/cve_summary_report_template.ftl
+          curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.5.0/ort-config/cve_summary_report_template.ftl
       - name: Download license management config files
         run: |
           echo "downloading ORT License Management config files..."
-          curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/feature/main_OSS_Review_Toolkit/ort-config/license-classifications.yml
-          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/feature/main_OSS_Review_Toolkit/ort-config/evaluator.rules.kts
+          curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.5.0/ort-config/license-classifications.yml
+          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.5.0/ort-config/evaluator.rules.kts
           echo "ORT License Management config files download successful"
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@v1
@@ -64,3 +64,7 @@ jobs:
           git add ort-reports/AsciiDoc_cve_summary_report_template.html
           git commit -m "docs: uploaded latest ort report"
           git push origin HEAD:${{ github.ref }}
+  antora_build:
+    uses: IsyFact/isy-github-actions-templates/.github/workflows/docs_build_template.yml@v1.5.0
+    secrets:
+      ANTORA_TRIGGER_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
