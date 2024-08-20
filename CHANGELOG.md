@@ -1,3 +1,6 @@
+# v1.5.0
+- `IFS-3938`: Behebung eines Syntaxfehlers im Schritt `Check release existence` in `maven_deploy_template.yml`
+
 # v1.4.0
 - `IFS-3611`: 
   - Hinzufügen des Workflow-Templates `pr_agent_template.yml` zur Automatisierung von PR-Analyse mit dem CodiumAI PR-Agent

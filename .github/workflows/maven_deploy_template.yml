@@ -133,7 +133,7 @@ jobs:
           -Dexists.skipIfSnapshot=true
           -Dexists.serverId=${{ inputs.deploy-server-id }}
           -Drevision=${{ inputs.version }}
-          -Dexists.repository= ${{ inputs.deploy-server-url }}
+          -Dexists.repository=${{ inputs.deploy-server-url }}
           org.honton.chas:exists-maven-plugin:0.7.0:remote
 
   Deploy:
