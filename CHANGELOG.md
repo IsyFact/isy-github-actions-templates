@@ -1,6 +1,8 @@
 # v1.5.0
 - `IFS-3956`: Anpassung des Workflows `oss_review_toolkit_template.yml` zur Veröffentlichung der Reports
-- `IFS-3938`: Behebung eines Syntaxfehlers im Schritt `Check release existence` in `maven_deploy_template.yml`
+- `IFS-3938`: 
+  - Behebung eines Syntaxfehlers im Schritt `Check release existence` in `maven_deploy_template.yml`. 
+  - Anpassung von default `deploy-server-url` in `maven_deploy_template.yml` an Maven Central 
 
 # v1.4.0
 - `IFS-3611`: 
