@@ -30,6 +30,7 @@ on:
         required: false
         type: string
         description: 'Deployment repository URL'
+        default: 'https://oss.sonatype.org/service/local/repositories/releases/content' # Maven Central
       deploy-url-release:
         required: false
         type: string
