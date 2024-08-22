@@ -30,6 +30,7 @@ on:
         required: false
         type: string
         description: 'Deployment repository URL'
+        default: 'https://oss.sonatype.org/service/local/repositories/releases/content' # Maven Central
       deploy-url-release:
         required: false
         type: string
@@ -62,10 +63,10 @@ on:
         description: 'Passphrase for private GPG key'
       DEPLOY_SERVER_USER_NAME:
         required: false
-        description: 'Username for deployment server (GitHub Packages or Maven Central)'
+        description: 'Username for deployment server (GitHub Packages/Maven Central)'
       DEPLOY_SERVER_TOKEN:
         required: false
-        description: 'Token for deployment server (GitHub Packages or Maven Central)'
+        description: 'Token for deployment server (GitHub Packages/Maven Central)'
       GH_PACKAGES_TOKEN:
         required: false
         description: 'GitHub Packages token'
@@ -152,11 +153,11 @@ jobs:
           distribution: temurin
           # arguments for generated settings.xml
           # see https://github.com/actions/setup-java/blob/v3.11.0/docs/advanced-usage.md#publishing-using-apache-maven
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }} # Value of the GPG private key to import
-          gpg-passphrase: GPG_PASSPHRASE
           server-id: ${{ inputs.deploy-server-id }} # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: DEPLOY_SERVER_USERNAME
           server-password: DEPLOY_SERVER_TOKEN
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: GPG_PASSPHRASE
       - name: Setup variables for signing and sbom
         run: |
           echo "CYCLONEDX_SBOM_OPTS=$([ ${{ inputs.sbom }} == "true" ] && echo "cyclonedx:makeBom" || echo "")" >> $GITHUB_ENV

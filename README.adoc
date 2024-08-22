@@ -110,43 +110,43 @@ Das Template enthält folgende Jobs:
 
 - *Validate*: +
 Prüft die Korrektheit eines Releases und insbesondere die verwendete Version. Der Job stellt sicher, dass die angegebene Version im Build/POM verwendet wird und diese den Vorgaben von Semantic Versioning folgt.
-Bei Releases, die über tags ausgelöst wurden, wird geprüft, dass es sich bei der Version um keinen Pre-Release handelt
-und, dass die verwendete Version nicht bereits auf Deploy-Repository vorhanden ist.
+Bei Releases, die über tags ausgelöst wurden, wird geprüft, dass es sich bei der Version um keinen Snapshot handelt und, dass die verwendete Version nicht bereits auf Deployment-Repository vorhanden ist.
 Bei Releases, die ohne tag erfolgen, wird geprüft, dass es sich um Snapshots handelt.
 
 - *Deploy*: +
 Führt das Deployment aus. Neben den Jars (inklusive Source und Dokumentation) kann der Job auch eine SBOM erstellen und  alle erzeugten Artefakte signieren.
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
-
-[width="100%",cols="34%,^14%,^17%,35%",options="header",]
 |===
-^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
-|`jdk-version` |Nein |`17` |Version des zu verwendenden JDKs
-|`maven-opts` |Nein |`""` |Zusätzliche Argumente, die an Maven weitergegeben werden
-|`checkout-lfs` |Nein |`false` |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
-|`version` |Ja | |Version des zu deployenden Artefakts
-|`deploy-server-id` |Nein | |Referenz zum Repository, auf welches das Deployment erfolgt.
-|`deploy-url-release` | | | URL zum Repository für stable Releases
-|`deploy-url-snapshot` | | |URL zum Repository für Pre-Releases
-|`sbom` |Nein |`false` |Erstellt eine SBOM im CycloneDX Format
-|`sign` |Nein |`false` | Signiert alle Artefakte. Erfordert GPG Private Key und Passphrase.
-4+^|*Secrets*
-|`GPG_PRIVATE_KEY` |Nein | |Privater GPG Key zur Signierung der Artefakte
-|`GPG_PASSPHRASE` |Nein | |Passphrase für GPG Key
-|`DEPLOY_SERVER_USER_NAME` |Nein | |Benutzer für Repository zum Deployment
-|`DEPLOY_SERVER_TOKEN` |Nein | |Token  oder Passwort für Repository zum Deployment
-|`GH_PACKAGES_TOKEN` |Nein | |Token für Zugriff auf GitHub Packages (siehe GitHub Packages)
+|Eingabe                    |Erforderlich |Standardwert |Beschreibung
+
+|`jdk-version`              |`false`      |`17`         |JDK Version
+|`version`                  |`true`       |             |Version des zu deployenden Artefakts
+|`maven-opts`               |`false`      |`""`         |Zusätzliche Argumente, die an Maven weitergegeben werden
+|`checkout-lfs`             |`false`      |`false`      |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
+|`deploy-server-id`         |`false`      |             |Referenz auf das Deployment-Repo
+|`deploy-server-url`        |`false`      |`'https://oss.sonatype.org/service/
+local/repositories/releases/content'`                   |URL des Deployment-Repo
+|`deploy-url-release`       |`false`      |             |Deployment-URL für Releases
+|`deploy-url-snapshot`      |`false`      |             |Deployment-URL für Snapshots
+|`sbom`                     |`false`      |`false`      |Erstellt eine SBOM im CycloneDX Format
+|`sign`                     |`false`      |`false`      |Signiert alle Artefakte. Erfordert GPG Private Key und Passphrase.
+4+|*Secrets*
+|`GPG_PRIVATE_KEY`          |`false`      |             |Privater GPG Key zur Signierung der Artefakte
+|`GPG_PASSPHRASE`           |`false`      |             |Passphrase für GPG Key
+|`DEPLOY_SERVER_USER_NAME`  |`false`      |             |Benutzer für Repository zum Deployment
+|`DEPLOY_SERVER_TOKEN`      |`false`      |             |Token oder Passwort für Repository zum Deployment
+|`GH_PACKAGES_TOKEN`        |`false`      |             |Token für Zugriff auf GitHub Packages
 |===
 
-TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input `deploy-server-id` werden durch die Setup Java GitHub Action einer generierten settings.xml hinzugefügt (https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md)
+TIP: Die Secrets (außer dem Token für GitHub Packages) sowie der Input `deploy-server-id` werden durch die GitHub Action `setup-java` einer generierten `settings.xml` hinzugefügt. (https://github.com/actions/setup-java/blob/v3.11.0/docs/advanced-usage.md#publishing-using-apache-maven)
 
 === OSS Review Toolkit Template
 Das Template `oss_review_toolki_template.yml` stellt einen Job zur Verfügung, welcher das OSS Review Toolkit aufruft. Dieses scannt alle Abhängigkeiten im Projekt und prüft sie auf CVEs. Weiterhin werden alle Lizenzen analysiert und gegebenenfalls auf Regelverstöße überprüft. All dies wird dann in verschiedenen Reports mittels Pipeline-Artefakt ausgegeben.
 Das Template hat keinerlei Parameter.
 
 === PR-Agent Template
-Die Template `pr_agent_template.yml` automatisiert PR-Analyse und Feedback unter Verwendung des CodiumAI PR-Agenten und OpenAIs ChatGPT. Ausgelöst durch einen `workflow_call`, wird er nur bei von Menschen initiierten Events ausgeführt. Der Workflow benötigt einen OpenAI-API-Schlüssel `OPENAI_KEY` und ein GitHub-Token `GITHUB_TOKEN` als Secrets, die es ihm ermöglichen, sich zu authentifizieren und mit GitHub- und OpenAI-Diensten zu interagieren. Es verfügt über Schreibrechte für Issues, Pull-Requests und Repository-Inhalte, sodass es Überprüfungen und Aktualisierungen effizient automatisieren kann. Dieser Arbeitsablauf steigert die Produktivität, indem er KI zur Erledigung von Routineaufgaben einsetzt und es den Entwicklern ermöglicht, sich auf komplexere Arbeiten zu konzentrieren.
+Das Template `pr_agent_template.yml` automatisiert PR-Analyse und Feedback unter Verwendung des CodiumAI PR-Agenten und OpenAIs ChatGPT. Ausgelöst durch einen `workflow_call`, wird er nur bei von Menschen initiierten Events ausgeführt. Der Workflow benötigt einen OpenAI-API-Schlüssel `OPENAI_KEY` und ein GitHub-Token `GITHUB_TOKEN` als Secrets, die es ihm ermöglichen, sich zu authentifizieren und mit GitHub- und OpenAI-Diensten zu interagieren. Es verfügt über Schreibrechte für Issues, Pull-Requests und Repository-Inhalte, sodass es Überprüfungen und Aktualisierungen effizient automatisieren kann. Dieser Arbeitsablauf steigert die Produktivität, indem er KI zur Erledigung von Routineaufgaben einsetzt und es den Entwicklern ermöglicht, sich auf komplexere Arbeiten zu konzentrieren.
 
 Standardmäßig werden die Befehle `/describe`, `/review`, `/improve` ausgeführt. Eine vollständige Liste der Befehle und ihrer Beschreibungen können unter https://pr-agent-docs.codium.ai/tools/[PR-Agent Documentation/Tools] gefunden werden oder durch Kommentieren des Befehls `/help` im PR.
 
@@ -287,30 +287,27 @@ NOTE: In isy-web werden einige Konfigurationsdateien über den LFS gespeichert, 
 TIP: `$GITHUB_REF_NAME` ist eine vordefinierte Variable innerhalb von GitHub Actions und enthält den Namen des zugehörigen Tags eines Releases.
 
 === OSS Review Toolkit Template
-
-[width="40%",cols="15%,10%, options="header",]
 |===
-^|Repository ^|Branch
+|Repository        |Branch
 
-^|isyfact-standards ^|master/main, 2x, 3x
-^|isy-datetime      ^|master/main
-^|isy-security      ^|master/main
-^|isy-web      ^|master/main
-^|isy-sonderzeichen      ^|master/main
-
+|isyfact-standards |master, release/2.x, release/3.x
+|isy-datetime      |main
+|isy-sonderzeichen |main
+|isy-security      |main
+|isy-web           |main
 |===
 
 === PR-Agent Template
 |===
-|Repository       |Branch
+|Repository                  |Branch
 
-|isy-datetime      |develop
+|isy-datetime                |develop
 |isy-github-actions-template |main
 |===
-=== Docs Build Template
 
+=== Docs Build Template
 |===
-|Repository       |Branch
+|Repository        |Branch
 
 |isy-datetime      |develop
 |isy-sonderzeichen |develop
@@ -318,7 +315,7 @@ TIP: `$GITHUB_REF_NAME` ist eine vordefinierte Variable innerhalb von GitHub Act
 
 === Update Antora Version Template
 |===
-|Repository       |Branch
+|Repository        |Branch
 
 |isy-datetime      |develop
 |isy-sonderzeichen |develop
