@@ -68,7 +68,7 @@ jobs:
           git add ort-reports/AsciiDoc_cve_summary_report_template.html
           git commit -m "docs: uploaded latest ort report"
           git push origin HEAD:${{ github.ref }}
-          gh pr create --title "docs: PR for latest ort report" --body "This PR updates the ort cve reports of this repository, published in the antora documentation" --base main --head new-branch
+          gh pr create --title "docs: PR for latest ort report" --body "This PR updates the ort cve reports of this repository, published in the antora documentation" --head new-branch
           pr_number=$(gh pr list --state open --json title,number --jq '.[] | select(.title == "docs: PR for latest ort report") | .number')
           gh pr merge $pr_number --merge --delete-branch
   antora_build:
