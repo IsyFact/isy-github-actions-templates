@@ -70,7 +70,7 @@ jobs:
           git commit -m "docs: uploaded latest ort report"
           git push -u origin feature/ort-report 
           default_branch=$(git remote show origin | grep "HEAD branch" | cut -d' ' -f5)
-          gh pr create --base default_branch --head feature/ort-report --title "docs: PR for latest ort report" --body "This PR updates the ort cve reports of this repository, published in the antora documentation"
+          gh pr create --base $default_branch --head feature/ort-report --title "docs: PR for latest ort report" --body "This PR updates the ort cve reports of this repository, published in the antora documentation"
           pr_number=$(gh pr list --state open --json title,number --jq '.[] | select(.title == "docs: PR for latest ort report") | .number')
           gh pr merge $pr_number --merge --delete-branch
   antora_build:
