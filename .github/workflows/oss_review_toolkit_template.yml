@@ -65,8 +65,8 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          currentDate=$(date +"%d/%m/%Y")
-          git checkout -b "feature/ort-report_$currentDate"
+          timestamp=$(date +"%d/%m/%Y_%H:%M")
+          git checkout -b "feature/ort-report_$timestamp"
           git add ort-reports/AsciiDoc_cve_summary_report_template.html
           git commit -m "docs: uploaded latest ort report"
           default_branch=$(git remote show origin | grep "HEAD branch" | cut -d' ' -f5)
