@@ -159,7 +159,7 @@ Das Template `docs_build_template.yml` erleichtert die automatische Initiierung 
 Der Workflow löst den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` unter Verwendung der GitHub CLI aus.
 
 - *Anpassbare Logging*:
-Der Workflow ermöglicht es Users, den Log-Schweregrad (`log_level`) und den Log-Fehlerschweregrad (`failure_level`) für den Antora-Build anzugeben. Diese Eingaben sind optional, wobei die Standardwerte auf `debug` bzw. `fatal` gesetzt sind.
+Der Workflow ermöglicht es Users, den Log-Schweregrad (`log_level`) und den Log-Fehlerschweregrad (`failure_level`) für den Antora-Build anzugeben. Diese Eingaben sind optional, wobei die Standardwerte auf `info` bzw. `fatal` gesetzt sind.
 
 - *Verarbeitung der Logs*:
 Der Workflow wartet, bis der ausgelöste Dokumentationsaufbau abgeschlossen ist.
@@ -179,7 +179,7 @@ Wenn der Antora-Build fehlschlägt, ist der Workflow so konzipiert, dass er eben
 
 | `log_level`
 | Nein
-| `debug`
+| `info`
 | Log-Schweregrad für den Antora-Build (`debug`, `info`, `warn`, `error`)
 
 | `failure_level`

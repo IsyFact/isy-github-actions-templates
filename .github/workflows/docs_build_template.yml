@@ -7,7 +7,7 @@ on:
         description: 'Log severity level for the Antora build (debug, info, warn, error)'
         required: false
         type: string
-        default: 'debug'
+        default: 'info'
       failure_level:
         description: 'Log failure level for the Antora build (fatal, error, warn, none)'
         required: false
