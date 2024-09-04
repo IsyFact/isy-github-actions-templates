@@ -1,8 +1,16 @@
+# v1.6.0
+- `IFS-2857`:
+    - Einführung von Inputs für `log_level` und `failure_level` um den Log-Schweregrad und -Fehlerschweregrad für Antora-Dokumentations-Builds zu steuern
+    - Implementierung von Schritten zum Auslösen eines Dokumentations-Builds im Repository `isyfact.github.io` und Warten auf dessen Fertigstellung.
+    - Verbesserte Log-Verarbeitung durch Abrufen, Bereinigen und Formatieren von Build-Logs in saubere Logs und eine Markdown-Datei
+    - Automatische Kommentierung der verarbeiteten Logs bei Pull-Requests zur besseren Sichtbarkeit
+    - Sicherstellung, dass der Workflow fehlschlägt, wenn der Antora-Build auf Fehler stößt, und verbessert die Fehlererkennung und -behandlung
+
 # v1.5.0
 - `IFS-3956`: Anpassung des Workflows `oss_review_toolkit_template.yml` zur Veröffentlichung der Reports
 - `IFS-3938`: 
   - Behebung eines Syntaxfehlers im Schritt `Check release existence` in `maven_deploy_template.yml`. 
-  - Anpassung von default `deploy-server-url` in `maven_deploy_template.yml` an Maven Central 
+  - Anpassung von default `deploy-server-url` in `maven_deploy_template.yml` an Maven Central
 
 # v1.4.0
 - `IFS-3611`: 

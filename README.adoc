@@ -151,7 +151,49 @@ Das Template `pr_agent_template.yml` automatisiert PR-Analyse und Feedback unter
 Standardmäßig werden die Befehle `/describe`, `/review`, `/improve` ausgeführt. Eine vollständige Liste der Befehle und ihrer Beschreibungen können unter https://pr-agent-docs.codium.ai/tools/[PR-Agent Documentation/Tools] gefunden werden oder durch Kommentieren des Befehls `/help` im PR.
 
 === Docs Build Template
-Das Template `docs_build_template.yml` ist ermöglicht den automatisierten Start von Dokumentations-Builds für Antora-Projekte. Es nutzt das Event `workflow_call`, um den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` über die GitHub CLI auszuführen. Dafür ist das Secret `ANTORA_TRIGGER_TOKEN` erforderlich, das die notwendigen Berechtigungen zum Authentifizieren und Auslösen des Workflows hat. Diese Automatisierung vereinfacht die Integration von Dokumentationsaktualisierungen in die CI/CD-Pipeline und sorgt für eine effiziente Bereitstellung von Dokumentationsänderungen.
+Das Template `docs_build_template.yml` erleichtert die automatische Initiierung von Dokumentations-Builds für Antora-Projekte.
+
+==== Features:
+
+- *Auslösen der Dokumentationserstellung*:
+Der Workflow löst den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` unter Verwendung der GitHub CLI aus.
+
+- *Anpassbare Logging*:
+Der Workflow ermöglicht es Users, den Log-Schweregrad (`log_level`) und den Log-Fehlerschweregrad (`failure_level`) für den Antora-Build anzugeben. Diese Eingaben sind optional, wobei die Standardwerte auf `info` bzw. `fatal` gesetzt sind.
+
+- *Verarbeitung der Logs*:
+Der Workflow wartet, bis der ausgelöste Dokumentationsaufbau abgeschlossen ist.
+Dann holt er die Logs ab und verarbeitet sie, indem er die relevanten Abschnitte extrahiert und bereinigt.
+Die bereinigten Logs werden in einer Markdown-Datei formatiert, sodass sie als PR-Kommentar gelesen werden können.
+
+- *Integration von Pull-Requests*:
+Wenn der Workflow durch einen PR ausgelöst wird, werden die formatierten Logs als Kommentar zum PR veröffentlicht.
+
+- *Fehlerbehandlung*:
+Wenn der Antora-Build fehlschlägt, ist der Workflow so konzipiert, dass er ebenfalls fehlschlägt, um sicherzustellen, dass alle Probleme sofort gekennzeichnet werden.
+
+==== Parameters:
+[options="header"]
+|===
+| Eingabe | Erforderlich | Standardwert | Beschreibung
+
+| `log_level`
+| Nein
+| `info`
+| Log-Schweregrad für den Antora-Build (`debug`, `info`, `warn`, `error`)
+
+| `failure_level`
+| Nein
+| `fatal`
+| Log-Fehlerschweregrad für den Antora-Build (`fatal`, `error`, `warn`, `none`)
+
+|*Secrets* |  |  |
+
+| `ANTORA_TRIGGER_TOKEN`
+| Ja
+|
+| GitHub-Token zum Auslösen des Dokumentations-Builds
+|===
 
 === Update Antora Version Template
 Das Template `update_antora_version_template.yml` dient dazu, die Version in der Datei `antora.yml` automatisch zu aktualisieren, wenn ein neuer Release-Branch erstellt wird. Der Workflow nutzt das Event `workflow_call`, um den `antora.yml`-Pfad zu setzen, die Versionsdetails aus dem Branch-Namen zu extrahieren und die Datei zu aktualisieren. Danach werden die Änderungen in den aktuellen Branch gepusht. Dies automatisiert den Prozess der Versionsverwaltung in der Dokumentation und sorgt für Konsistenz und Effizienz.
