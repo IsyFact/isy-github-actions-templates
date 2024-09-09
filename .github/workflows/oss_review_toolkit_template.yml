@@ -66,7 +66,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           timestamp=$(date +"%d%m%Y_%H%M")
-          branch_name=$("feature/ort-report_$timestamp")
+          branch_name="feature/ort-report_$timestamp"
           git checkout -b $branch_name
           git add ort-reports/AsciiDoc_cve_summary_report_template.html
           git commit -m "docs: uploaded latest ort report"
