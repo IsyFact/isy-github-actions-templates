@@ -70,6 +70,8 @@ jobs:
       - name: Modify POM file of isyfact-products-bom for scanning dependencyManagement
         if: ${{ inputs.scan-dependency-management }}
         run: |
+          set -x
+          
           POM_FILE="isyfact-products-bom/pom.xml"
 
           # Check if the POM file exists
@@ -104,7 +106,8 @@ jobs:
                       p
                   }
               }')
-          
+          done
+
           # Extract only the groupId and artifactId tags
           DEPENDENCIES=$(echo "$DEPENDENCIES" | sed -n '
               /<dependency>/,/<\/dependency>/ {
@@ -119,7 +122,7 @@ jobs:
 
           # Insert extracted dependencies into the <dependencies> section right after </dependencyManagement>
           echo "Inserting extracted dependencies into the POM file..."
-          
+
           awk -v deps="$DEPENDENCIES" '
               /<\/dependencyManagement>/ {
                   print $0
@@ -129,8 +132,8 @@ jobs:
                   next
               }
               { print $0 }
-          ' "$POM_FILE" 
-          
+          ' "$POM_FILE"
+
           if [[ $? -eq 0 ]]; then
             echo "Dependencies successfully inserted into $POM_FILE"
           else
