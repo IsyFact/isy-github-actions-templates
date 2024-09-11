@@ -70,8 +70,6 @@ jobs:
       - name: Modify POM file of isyfact-products-bom for scanning dependencyManagement
         if: ${{ inputs.scan-dependency-management }}
         run: |
-          set -x
-          
           POM_FILE="isyfact-products-bom/pom.xml"
 
           # Check if the POM file exists
@@ -143,13 +141,17 @@ jobs:
 
       - name: Run Snyk task
         run: |
-          if [ "${{ inputs.perform-scan }}" = "true" ]; then
-            snyk test ${{ inputs.snyk-arguments }}
-              --severity-threshold=${{ inputs.severity-threshold }} 
-              --target-reference=${{ inputs.snyk-reference }}
-              --org=${{ inputs.snyk-organization }}
-          else
-            snyk monitor ${{ inputs.snyk-arguments }} 
-              --target-reference=${{ inputs.snyk-reference }} 
-              --org=${{ inputs.snyk-organization }}
-          fi
+          # Run Snyk test or monitor based on the input
+          snyk test isyfact-products-bom
+            --severity-threshold=${{ inputs.severity-threshold }}
+            --org=${{ inputs.snyk-organization }}
+#          if [ "${{ inputs.perform-scan }}" = "true" ]; then
+#            snyk test ${{ inputs.snyk-arguments }}
+#              --severity-threshold=${{ inputs.severity-threshold }}
+#              --target-reference=${{ inputs.snyk-reference }}
+#              --org=${{ inputs.snyk-organization }}
+#          else
+#            snyk monitor ${{ inputs.snyk-arguments }}
+#              --target-reference=${{ inputs.snyk-reference }}
+#              --org=${{ inputs.snyk-organization }}
+#          fi
