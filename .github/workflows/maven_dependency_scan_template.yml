@@ -71,6 +71,7 @@ jobs:
         if: ${{ inputs.scan-dependency-management }}
         run: |
           POM_FILE="isyfact-products-bom/pom.xml"
+          TEMP_DEPENDENCIES_FILE="dependencies_temp.xml"
 
           # Check if the POM file exists
           if [ ! -f "$POM_FILE" ]; then
@@ -106,31 +107,34 @@ jobs:
               }')
           done
 
-          # Extract only the groupId and artifactId tags
+          # Remove <exclusions> blocks and extract only groupId and artifactId from <dependency>
           DEPENDENCIES=$(echo "$DEPENDENCIES" | sed -n '
-              /<dependency>/,/<\/dependency>/ {
-                  /<groupId>/p;
-                  /<artifactId>/p;
-                  /<dependency>/p;
-                  /<\/dependency>/p;
-              }')
-
-          # Remove newlines and whitespace between tags
-          DEPENDENCIES=$(echo "$DEPENDENCIES" | tr '\n' ' ' | sed 's/>[[:space:]]*</></g')
+            /<dependency>/,/<\/dependency>/ {
+            /<exclusions>/,/<\/exclusions>/d;  # Remove exclusions block
+            /<groupId>/p;                      # Only print groupId
+            /<artifactId>/p;                   # Only print artifactId
+            /<dependency>/p;
+            /<\/dependency>/p;
+          }')
 
           # Insert extracted dependencies into the <dependencies> section right after </dependencyManagement>
           echo "Inserting extracted dependencies into the POM file..."
 
-          awk -v deps="$DEPENDENCIES" '
-              /<\/dependencyManagement>/ {
-                  print $0
-                  print "<dependencies>"
-                  print deps
-                  print "</dependencies>"
-                  next
+          echo "$DEPENDENCIES" > "$TEMP_DEPENDENCIES_FILE"
+          
+          # Use awk to insert the dependencies right after the </dependencyManagement> tag
+          awk -v depfile="$TEMP_DEPENDENCIES_FILE" '
+            /<\/dependencyManagement>/ {
+              print $0
+              print "<dependencies>"
+              while ((getline line < depfile) > 0) {
+                print line
               }
-              { print $0 }
-          ' "$POM_FILE"
+              print "</dependencies>"
+              next
+            }
+            { print $0 }
+          ' "$POM_FILE" > "$POM_FILE.tmp" && mv "$POM_FILE.tmp" "$POM_FILE"
 
           if [[ $? -eq 0 ]]; then
             echo "Dependencies successfully inserted into $POM_FILE"
@@ -138,13 +142,20 @@ jobs:
             echo "Failed to insert dependencies."
             exit 1
           fi
+          
+          # Add a small pause to ensure the file is properly written before reading it
+          sleep 1
+          
+          # Print the modified pom.xml file
+          echo "Printing the modified content of $POM_FILE"
+          cat "$POM_FILE"
 
       - name: Run Snyk task
         run: |
           # Run Snyk test or monitor based on the input
-          snyk test isyfact-products-bom
-            --severity-threshold=${{ inputs.severity-threshold }}
-            --org=${{ inputs.snyk-organization }}
+          snyk test isyfact-products-bom --severity-threshold=${{ inputs.severity-threshold }}
+#            --target-reference=${{ inputs.snyk-reference }}
+#            --org=${{ inputs.snyk-organization }}
 #          if [ "${{ inputs.perform-scan }}" = "true" ]; then
 #            snyk test ${{ inputs.snyk-arguments }}
 #              --severity-threshold=${{ inputs.severity-threshold }}
