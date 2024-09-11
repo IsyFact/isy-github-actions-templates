@@ -81,6 +81,9 @@ jobs:
           echo "$POM_FILE found. Modifying the POM file."
 
           # Extract dependencies from dependencyManagement
+          echo "Installing xmllint..."
+          sudo apt-get install libxml2-utils
+          
           echo "Extracting dependencies from dependencyManagement..."
 
           DEPENDENCIES=$(xmllint --xpath "//*[local-name()='dependencyManagement']/*[local-name()='dependencies']/*[local-name()='dependency']" "$POM_FILE" 2>/dev/null)
