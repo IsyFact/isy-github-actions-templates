@@ -110,19 +110,17 @@ jobs:
           # Remove <exclusions> blocks and extract only groupId and artifactId from <dependency>
           DEPENDENCIES=$(echo "$DEPENDENCIES" | sed -n '
             /<dependency>/,/<\/dependency>/ {
+            /<dependency>/p;
+            /<\/dependency>/p;
             /<exclusions>/,/<\/exclusions>/d;  # Remove exclusions block
             /<groupId>/p;                      # Only print groupId
             /<artifactId>/p;                   # Only print artifactId
-            /<dependency>/p;
-            /<\/dependency>/p;
           }')
 
           # Insert extracted dependencies into the <dependencies> section right after </dependencyManagement>
           echo "Inserting extracted dependencies into the POM file..."
-
           echo "$DEPENDENCIES" > "$TEMP_DEPENDENCIES_FILE"
           
-          # Use awk to insert the dependencies right after the </dependencyManagement> tag
           awk -v depfile="$TEMP_DEPENDENCIES_FILE" '
             /<\/dependencyManagement>/ {
               print $0
@@ -142,27 +140,16 @@ jobs:
             echo "Failed to insert dependencies."
             exit 1
           fi
-          
-          # Add a small pause to ensure the file is properly written before reading it
-          sleep 1
-          
-          # Print the modified pom.xml file
-          echo "Printing the modified content of $POM_FILE"
-          cat "$POM_FILE"
 
       - name: Run Snyk task
         run: |
-          # Run Snyk test or monitor based on the input
-          snyk test isyfact-products-bom --severity-threshold=${{ inputs.severity-threshold }}
-#            --target-reference=${{ inputs.snyk-reference }}
-#            --org=${{ inputs.snyk-organization }}
-#          if [ "${{ inputs.perform-scan }}" = "true" ]; then
-#            snyk test ${{ inputs.snyk-arguments }}
-#              --severity-threshold=${{ inputs.severity-threshold }}
-#              --target-reference=${{ inputs.snyk-reference }}
-#              --org=${{ inputs.snyk-organization }}
-#          else
-#            snyk monitor ${{ inputs.snyk-arguments }}
-#              --target-reference=${{ inputs.snyk-reference }}
-#              --org=${{ inputs.snyk-organization }}
-#          fi
+          if [ "${{ inputs.perform-scan }}" = "true" ]; then
+            snyk test ${{ inputs.snyk-arguments }} \
+              --severity-threshold=${{ inputs.severity-threshold }} \
+              --target-reference=${{ inputs.snyk-reference }} \
+              --org=${{ inputs.snyk-organization }}
+          else
+            snyk monitor ${{ inputs.snyk-arguments }} \
+              --target-reference=${{ inputs.snyk-reference }} \
+              --org=${{ inputs.snyk-organization }}
+          fi
