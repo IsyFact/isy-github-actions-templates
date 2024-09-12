@@ -97,6 +97,7 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |`snyk-arguments` |Nein |`--maven-aggregate-project` | Optionale Befehle für die Snyk CLI
 |`perform-scan` |Nein |`false` | Durchführung von Scanning statt Monitoring
 |`severity-threshold` |Nein |`critical` | Schweregrad für Snyk-Scan
+|`scan-dependency-management` |Nein |`true` | Scannen von Dependencies in Dependency Management
 4+^|*Secrets*
 |`SNYK_TOKEN` |Ja | |Token zur Authentifizierung bei Snyk
 |===
