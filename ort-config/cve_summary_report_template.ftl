@@ -46,8 +46,11 @@
 
 * ${vulnerability.id}
 [#list vulnerability.references?filter(ref -> ref.scoringSystem?? && ref.severity??) as reference]
+[#if vulnerabilityReference.getSeverityString(reference.scoringSystem, reference.severity) != null]
 [#assign severityString = vulnerabilityReference.getSeverityString(reference.scoringSystem, reference.severity)]
-
+[#else]
+[#assign severityString = "severity is null"
+[/#if]
 ** Source: ${reference.url} +
    Severity: [.severity-${severityString?lower_case}]#${reference.severity}# (${reference.scoringSystem})
 
