@@ -75,6 +75,11 @@ jobs:
           git pull origin $default_branch
           git push -u origin $branch_name
           gh pr create --base $default_branch --head $branch_name --title "docs: PR for latest ort report" --body "This PR updates the ort cve reports of this repository, published in the antora documentation"
+
+      - name: Approve and merge PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PR_TOKEN }}
+        run: |
           pr_number=$(gh pr list --state open --json title,number --jq '.[] | select(.title == "docs: PR for latest ort report") | .number')
           git config --global user.name 'mariusarltmsg'
           git config --global user.email 'marius.arlt@msg.group'
