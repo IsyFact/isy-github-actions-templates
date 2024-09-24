@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Download report template
         run: |
-          curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.5.0/ort-config/cve_summary_report_template.ftl
+          curl -o cve_summary_report_template.ftl https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/feature/ifs-3956-main_ort/ort-config/cve_summary_report_template.ftl
       - name: Download license management config files
         run: |
           echo "downloading ORT License Management config files..."
