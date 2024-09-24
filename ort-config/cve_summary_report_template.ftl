@@ -46,7 +46,7 @@
 
 * ${vulnerability.id}
 [#list vulnerability.references?filter(ref -> ref.scoringSystem?? && ref.severity??) as reference]
-[#if vulnerabilityReference.getSeverityString(reference.scoringSystem, reference.severity) != null]
+[#if vulnerabilityReference.getSeverityString(reference.scoringSystem, reference.severity)??]
 [#assign severityString = vulnerabilityReference.getSeverityString(reference.scoringSystem, reference.severity)]
 [#else]
 [#assign severityString = "severity is null"]
