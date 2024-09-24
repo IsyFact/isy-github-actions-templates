@@ -22,7 +22,7 @@ jobs:
           echo "downloading ORT License Management config files..."
           curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.5.0/ort-config/license-classifications.yml
 #          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.5.0/ort-config/evaluator.rules.kts
-          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/ort-config/evaluator.rules.kts@feature/ifs-3956-main_ort
+          curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/feature/ifs-3956-main_ort/ort-config/evaluator.rules.kts
           echo "ORT License Management config files download successful"
       - name: Run GitHub Action for ORT
         uses: oss-review-toolkit/ort-ci-github-action@v1
