@@ -84,9 +84,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pr_number=$(gh pr list --state open --json title,number --jq '.[] | select(.title == "docs: PR for latest ort report") | .number')
+          gh auth logout
           git config --global user.name 'mariusarltmsg'
           git config --global user.email 'marius.arlt@msg.group'
-          gh auth logout
           gh auth login --with-token ${{ secrets.GH_PR_TOKEN }}
           gh pr review $pr_number --approve
           git config --global user.name 'github-actions[bot]'
