@@ -45,14 +45,10 @@
 [#list helper.filterForUnresolvedVulnerabilities(result.vulnerabilities) as vulnerability]
 
 * ${vulnerability.id}
-[#list vulnerability.references?filter(ref -> ref.scoringSystem?? && ref.severity??) as reference]
-[#if vulnerabilityReference.getSeverityString(reference.scoringSystem, reference.severity)??]
-[#assign severityString = vulnerabilityReference.getSeverityString(reference.scoringSystem, reference.severity)]
-[#else]
-[#assign severityString = "severity is null"]
-[/#if]
-** Source: ${reference.url} +
-   Severity: [.severity-${severityString?lower_case}]#${reference.severity}# (${reference.scoringSystem})
+[#list vulnerability.references?filter(ref -> ref.scoringSystem?? && ref.score?? && ref.severity??) as reference]
+** Source: link:++${reference.url}++[] +
+   Severity: [.severity-${reference.severity?lower_case}]#${reference.severity}# (${reference.scoringSystem} score ${reference.score?string["0.0"]})
+[/#list]
 
 [/#list]
 
