@@ -78,7 +78,7 @@ jobs:
 
       - name: Approve and merge PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           pr_number=$(gh pr list --state open --json title,number --jq '.[] | select(.title == "docs: PR for latest ort report") | .number')
           git config --global user.name 'mariusarltmsg'
@@ -86,6 +86,7 @@ jobs:
           gh pr review $pr_number --approve
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          gh auth login --with-token ${{ secrets.GH_PR_TOKEN }}
           gh pr merge $pr_number --merge --delete-branch --admin
   antora_build:
     needs: ort
