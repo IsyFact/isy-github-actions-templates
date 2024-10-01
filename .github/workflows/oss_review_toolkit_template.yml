@@ -23,41 +23,41 @@ jobs:
           curl -o license-classifications.yml https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/v1.5.0/ort-config/license-classifications.yml
           curl -o evaluator.rules.kts https://raw.githubusercontent.com/IsyFact/isy-github-actions-templates/feature/ifs-3956-main_ort/ort-config/evaluator.rules.kts
           echo "ORT License Management config files download successful"
-      - name: Run GitHub Action for ORT
-        uses: oss-review-toolkit/ort-ci-github-action@v1
-        with:
-          docker-cli-args:
-            --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/templates/
-            --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/config/
-          report-formats: WebApp,StaticHtml,HtmlTemplate -O HtmlTemplate=template.path=/home/ort/.ort/templates/cve_summary_report_template.ftl
-      - name: Download workflow artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ort-reports
-      - name: Move report to correct directory
-        run: |
-          mv ort-reports/ort-results-*/AsciiDoc_cve_summary_report_template.html ort-reports/
-          mv ort-reports/ort-results-*/scan-report-web-app.html ort-reports/
+#      - name: Run GitHub Action for ORT
+#        uses: oss-review-toolkit/ort-ci-github-action@v1
+#        with:
+#          docker-cli-args:
+#            --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/templates/
+#            --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/config/
+#          report-formats: WebApp,StaticHtml,HtmlTemplate -O HtmlTemplate=template.path=/home/ort/.ort/templates/cve_summary_report_template.ftl
+#      - name: Download workflow artifacts
+#        uses: actions/download-artifact@v4
+#        with:
+#          path: ort-reports
+#      - name: Move report to correct directory
+#        run: |
+#          mv ort-reports/ort-results-*/AsciiDoc_cve_summary_report_template.html ort-reports/
+#          mv ort-reports/ort-results-*/scan-report-web-app.html ort-reports/
       - name: Install sed
         run: sudo apt-get -y install sed
-      - name: Edit report file
-        run: |
-          sed -n '/<div id="footer-text">/,/<\/div>/ {
-          /<div id="footer-text">/d
-          /<\/div>/d
-          p
-          }' ort-reports/AsciiDoc_cve_summary_report_template.html > ort-reports/last_updated_text.txt
-          
-          sed -e '/<div id="footer-text">/,/<\/div>/d' \
-          ort-reports/AsciiDoc_cve_summary_report_template.html > ort-reports/AsciiDoc_cve_summary_report_template_modified.html
-          
-          sed -e '/<\/head>/ {
-          r ort-reports/last_updated_text.txt
-          }' ort-reports/AsciiDoc_cve_summary_report_template_modified.html > ort-reports/final_output.html
-          
-          mv ort-reports/final_output.html ort-reports/AsciiDoc_cve_summary_report_template.html
-          
-          rm ort-reports/last_updated_text.txt ort-reports/AsciiDoc_cve_summary_report_template_modified.html
+#      - name: Edit report file
+#        run: |
+#          sed -n '/<div id="footer-text">/,/<\/div>/ {
+#          /<div id="footer-text">/d
+#          /<\/div>/d
+#          p
+#          }' ort-reports/AsciiDoc_cve_summary_report_template.html > ort-reports/last_updated_text.txt
+#
+#          sed -e '/<div id="footer-text">/,/<\/div>/d' \
+#          ort-reports/AsciiDoc_cve_summary_report_template.html > ort-reports/AsciiDoc_cve_summary_report_template_modified.html
+#
+#          sed -e '/<\/head>/ {
+#          r ort-reports/last_updated_text.txt
+#          }' ort-reports/AsciiDoc_cve_summary_report_template_modified.html > ort-reports/final_output.html
+#
+#          mv ort-reports/final_output.html ort-reports/AsciiDoc_cve_summary_report_template.html
+#
+#          rm ort-reports/last_updated_text.txt ort-reports/AsciiDoc_cve_summary_report_template_modified.html
 
       - name: Commit and push report
         env:
@@ -69,7 +69,9 @@ jobs:
           timestamp=$(date +"%d%m%Y_%H%M")
           branch_name="feature/ort-report_$timestamp"
           git checkout -b $branch_name
-          git add ort-reports/AsciiDoc_cve_summary_report_template.html
+          touch test.txt
+          git add test.txt
+#          git add ort-reports/AsciiDoc_cve_summary_report_template.html
           git commit -m "docs: uploaded latest ort report"
           default_branch=$(git remote show origin | grep "HEAD branch" | cut -d' ' -f5)
           git pull origin $default_branch
@@ -78,7 +80,7 @@ jobs:
 
       - name: Approve and merge PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_PR_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PR_TOKEN }}
         run: |
           pr_number=$(gh pr list --state open --json title,number --jq '.[] | select(.title == "docs: PR for latest ort report") | .number')
           git config --global user.name 'mariusarltmsg'
