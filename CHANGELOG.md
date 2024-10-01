@@ -5,7 +5,11 @@
     - Verbesserte Log-Verarbeitung durch Abrufen, Bereinigen und Formatieren von Build-Logs in saubere Logs und eine Markdown-Datei
     - Automatische Kommentierung der verarbeiteten Logs bei Pull-Requests zur besseren Sichtbarkeit
     - Sicherstellung, dass der Workflow fehlschlägt, wenn der Antora-Build auf Fehler stößt, und verbessert die Fehlererkennung und -behandlung
-
+- `IFS-2853`:
+  - Verbesserung des Dependency-Scan-Templates mit dependencyManagement-Unterstützung:
+    - Hinzufügen eines neuen Inputs `scan-dependency-management`, um das Scannen von Dependencies zu steuern.
+    - Implementierung eines Schrittes zur Änderung der POM-Datei von `isyfact-products-bom` für das Scannen von Dependencies in dependencyManagement.
+    
 # v1.5.0
 - `IFS-3956`: Anpassung des Workflows `oss_review_toolkit_template.yml` zur Veröffentlichung der Reports
 - `IFS-3938`: 
