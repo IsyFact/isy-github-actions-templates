@@ -1,4 +1,5 @@
 # v1.6.0
+## Features
 - `IFS-2857`:
     - Einführung von Inputs für `log_level` und `failure_level` um den Log-Schweregrad und -Fehlerschweregrad für Antora-Dokumentations-Builds zu steuern
     - Implementierung von Schritten zum Auslösen eines Dokumentations-Builds im Repository `isyfact.github.io` und Warten auf dessen Fertigstellung.
@@ -9,7 +10,18 @@
   - Verbesserung des Dependency-Scan-Templates mit dependencyManagement-Unterstützung:
     - Hinzufügen eines neuen Inputs `scan-dependency-management`, um das Scannen von Dependencies zu steuern.
     - Implementierung eines Schrittes zur Änderung der POM-Datei von `isyfact-products-bom` für das Scannen von Dependencies in dependencyManagement.
-    
+
+## Fixes
+- `IFS-2079`: Hinzufügen von git-commit-id-plugin zur Whitelist
+- `IFS-3729`: Hinzufügen der Standard-Deploy-Url für Deploy Maven Template
+- `IFS-3938`: Behebung eines Leerzeichenfehlers bei der Überprüfung des Vorhandenseins von Release
+- `IFS-3611`: Behebung eines Syntaxfehlers im PR-Agent 
+
+## Chore
+- Codium-ai/pr-agent von 0.23 auf 0.24
+- codex-/await-remote-run von 1.11.0 auf 1.12.2
+- codex-/return-dispatch von 1.12.0 auf 1.16.0
+
 # v1.5.0
 - `IFS-3956`: Anpassung des Workflows `oss_review_toolkit_template.yml` zur Veröffentlichung der Reports
 - `IFS-3938`: 
