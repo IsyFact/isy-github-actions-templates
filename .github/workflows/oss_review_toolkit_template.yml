@@ -84,7 +84,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           approveToken: ${{ secrets.GH_PR_TOKEN }}
         run: |
-          echo 'Test ApproveToken:' ${{ secrets.GITHUB_TOKEN }}
+          echo 'Test GitHubToken:' ${{ secrets.GITHUB_TOKEN }}
+          echo 'Test ApproveToken:' ${{ secrets.GH_PR_TOKEN }}
           pr_number=$(gh pr list --state open --json title,number --jq '.[] | select(.title == "docs: PR for latest ort report") | .number')
           gh auth logout
           gh auth login --with-token ${{ secrets.GH_PR_TOKEN }}
