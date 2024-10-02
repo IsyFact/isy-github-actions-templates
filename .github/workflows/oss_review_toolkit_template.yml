@@ -86,7 +86,7 @@ jobs:
 #          git config --global user.name 'mariusarltmsg'
 #          git config --global user.email 'marius.arlt@msg.group'
         run: |
-          echo $approveToken
+          echo 'Test ApproveToken: $approveToken'
           pr_number=$(gh pr list --state open --json title,number --jq '.[] | select(.title == "docs: PR for latest ort report") | .number')
           gh auth logout
           gh auth login --with-token $approveToken
