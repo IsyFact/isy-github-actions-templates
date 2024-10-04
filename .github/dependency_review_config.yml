@@ -84,5 +84,3 @@ allow_licenses:
   - 'Zend-2.0'
   - 'Zlib'
   - 'zlib-acknowledgement'
-allow-dependencies-licenses:
-  - 'pkg:maven/pl.project13.maven/git-commit-id-plugin'

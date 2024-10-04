@@ -10,9 +10,10 @@
   - Verbesserung des Dependency-Scan-Templates mit dependencyManagement-Unterstützung:
     - Hinzufügen eines neuen Inputs `scan-dependency-management`, um das Scannen von Dependencies zu steuern.
     - Implementierung eines Schrittes zur Änderung der POM-Datei von `isyfact-products-bom` für das Scannen von Dependencies in dependencyManagement.
+- `IFS-2079`:
+  - Hinzufügen von Inputs zum Ausschluss von Lizenzen beim Dependency Review Template
 
 ## Fixes
-- `IFS-2079`: Hinzufügen von git-commit-id-plugin zur Whitelist
 - `IFS-3729`: Hinzufügen der Standard-Deploy-Url für Deploy Maven Template
 - `IFS-3938`: Behebung eines Leerzeichenfehlers bei der Überprüfung des Vorhandenseins von Release
 - `IFS-3611`: Behebung eines Syntaxfehlers im PR-Agent 
