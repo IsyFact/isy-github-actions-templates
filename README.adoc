@@ -6,6 +6,8 @@ Dieses Repository beinhaltet GitHub Action Templates (https://docs.github.com/en
 
 Ein Beispiel-Szenario dazu wäre: Der https://github.com/GsActions/commit-message-checker[Commit Message Checker] ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen. Diese Funktionalität ist nun in einigen meiner Repositories mit gewünscht, wobei der Commit Message Checker überall gleich konfiguriert sein soll. Statt die Action nun also in jedem Repository einzeln einzubinden und zu konfigurieren, erstellt man ein Template in einem Repository mit der gewünschten Konfiguration und ruft dieses in allen anderen auf.
 
+== Entkopplungs-Workflows
+
 image::git_workflows.jpg[]
 
 == Templates
