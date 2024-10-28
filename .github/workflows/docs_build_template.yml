@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Trigger documentation build
-        uses: codex-/return-dispatch@v1.16.0
+        uses: codex-/return-dispatch@v2.0.3
         id: trigger_build
         with:
           token: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
