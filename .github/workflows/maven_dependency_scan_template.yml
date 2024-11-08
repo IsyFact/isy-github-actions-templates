@@ -107,6 +107,17 @@ jobs:
               }')
           done
 
+          # Exclude dependencies with <type>pom</type>
+          DEPENDENCIES=$(echo "$DEPENDENCIES" | sed -n '
+              /<dependency>/,/<\/dependency>/ {
+                  H;
+                  /<\/dependency>/ {
+                      x;
+                      /<type>pom<\/type>/d;           # Remove dependencies with <type>pom</type>
+                      p
+                  }
+              }')
+
           # Remove <exclusions> blocks and extract only groupId and artifactId from <dependency>
           DEPENDENCIES=$(echo "$DEPENDENCIES" | sed -n '
             /<dependency>/,/<\/dependency>/ {
