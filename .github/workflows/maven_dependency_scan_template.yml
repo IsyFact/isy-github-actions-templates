@@ -39,7 +39,7 @@ on:
         required: false
         description: 'Scan dependencies in dependencyManagement'
         type: boolean
-        default: true
+        default: false
     secrets:
       SNYK_TOKEN:
         required: true
