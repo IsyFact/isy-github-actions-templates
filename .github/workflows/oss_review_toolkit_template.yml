@@ -78,7 +78,6 @@ jobs:
           git pull origin $default_branch
           git push -u origin $branch_name
           gh pr create --base $default_branch --head $branch_name --title "docs: PR for latest ort report" --body "This PR updates the ort cve reports of this repository, published in the antora documentation"
-          gh auth logout
 
       - name: Approve and merge PR
         env:
