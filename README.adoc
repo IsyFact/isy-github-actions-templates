@@ -130,7 +130,7 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |`maven-opts`               |`false`      |`""`         |Zusätzliche Argumente, die an Maven weitergegeben werden
 |`checkout-lfs`             |`false`      |`false`      |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
 |`deploy-server-id`         |`false`      |             |Referenz auf das Deployment-Repo
-|`deploy-server-url`        |`false`      |`'https://oss.sonatype.org/service/
+|`deploy-server-url`        |`false`      |`'https://central.sonatype.org/service/
 local/repositories/releases/content'`                   |URL des Deployment-Repo
 |`deploy-url-release`       |`false`      |             |Deployment-URL für Releases
 |`deploy-url-snapshot`      |`false`      |             |Deployment-URL für Snapshots
