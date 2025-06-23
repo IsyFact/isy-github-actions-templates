@@ -1,0 +1,45 @@
+name: Publish Release
+
+# Triggers the workflow on version tags like 1.0.0
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+# Write permission required to publish release
+permissions:
+  contents: write
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          TAG_NAME: ${{ github.ref }}
+          RELEASE_NAME: ${{ github.ref_name }}
+        # language=bash
+        run: |
+          # Read content from CHANGELOG.md - escape quotes and line breaks
+          CHANGELOG_CONTENT=$(awk '{gsub(/"/, "\\\""); printf "%s\\n", $0}' CHANGELOG.md)
+          # Create a release on GitHub using the API
+          RESPONSE=$(curl -L -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/$GITHUB_REPOSITORY/releases \
+            -d "{\"tag_name\": \"$TAG_NAME\", \"name\": \"$RELEASE_NAME\", \"body\": \"$CHANGELOG_CONTENT\", \"draft\": false, \"prerelease\": false}")
+          # Check if the release was created successfully
+          if echo "$RESPONSE" | grep -q '"id":'; then
+            echo "Release created successfully."
+          else
+            echo "Failed to create release."
+            echo "Response: $RESPONSE"
+            exit 1
+          fi
