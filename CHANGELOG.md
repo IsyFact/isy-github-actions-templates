@@ -1,3 +1,7 @@
+# v1.7.0
+## Features
+- `IFS-4612`: Hinzufügen des `Publish Release` als Template 
+
 # v1.6.0
 ## Features
 - `IFS-2857`:
