@@ -202,3 +202,8 @@ Wenn der Antora-Build fehlschlägt, ist der Workflow so konzipiert, dass er eben
 
 === Update Antora Version Template
 Das Template `update_antora_version_template.yml` dient dazu, die Version in der Datei `antora.yml` automatisch zu aktualisieren, wenn ein neuer Release-Branch erstellt wird. Der Workflow nutzt das Event `workflow_call`, um den `antora.yml`-Pfad zu setzen, die Versionsdetails aus dem Branch-Namen zu extrahieren und die Datei zu aktualisieren. Danach werden die Änderungen in den aktuellen Branch gepusht. Dies automatisiert den Prozess der Versionsverwaltung in der Dokumentation und sorgt für Konsistenz und Effizienz.
+
+=== Create Release Template
+
+Mithilfe des Templates `maven_create_release_template.yml` wird automatisch ein Release aus einem Tag heraus erstellt.
+Die Datei `CHANGELOG.md` im jeweiligen Repository wird als Release Notes verwendet und dargestellt.
