@@ -153,7 +153,7 @@ jobs:
           distribution: temurin
           # arguments for generated settings.xml
           # see https://github.com/actions/setup-java/blob/v3.11.0/docs/advanced-usage.md#publishing-using-apache-maven
-          server-id: ${{ inputs.deploy-server-id }} # Value of the distributionManagement/repository/id field of the pom.xml
+          server-id: central # Value of the distributionManagement/repository/id field of the pom.xml
           server-username: DEPLOY_SERVER_USERNAME
           server-password: DEPLOY_SERVER_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
