@@ -172,4 +172,4 @@ jobs:
           DEPLOYURL_SNAPSHOT: ${{ inputs.deploy-url-snapshot }}
         run: >
           mvn -X -DskipTests -Dspotbugs.skip -Dcheckstyle.skip  -DdeployAtEnd -Drevision=${{ inputs.version }}
-          $MAVEN_CLI_OPTS ${{ inputs.maven-opts }} $GPG_SIGN_OPTS $CYCLONEDX_SBOM_OPTS deploy
+          $MAVEN_CLI_OPTS ${{ inputs.maven-opts }} $GPG_SIGN_OPTS $CYCLONEDX_SBOM_OPTS deploy -PcentralRelease
