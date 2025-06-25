@@ -78,6 +78,6 @@ jobs:
           gh pr merge $pr_number --merge --delete-branch
   antora_build:
     needs: ort
-    uses: IsyFact/isy-github-actions-templates/.github/workflows/docs_build_template.yml@v1.6.0
+    uses: IsyFact/isy-github-actions-templates/.github/workflows/docs_build_template.yml@v1.7.0
     secrets:
       ANTORA_TRIGGER_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
