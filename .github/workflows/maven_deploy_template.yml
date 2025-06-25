@@ -154,8 +154,8 @@ jobs:
           # arguments for generated settings.xml
           # see https://github.com/actions/setup-java/blob/v3.11.0/docs/advanced-usage.md#publishing-using-apache-maven
           server-id: central # Value of the distributionManagement/repository/id field of the pom.xml
-          server-username: DEPLOY_SERVER_USERNAME
-          server-password: DEPLOY_SERVER_TOKEN
+          server-username: ${{ secrets.MAVEN_CENTRAL_USER_NAME }}
+          server-password: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
       - name: Output length of server-username and server-password # TODO: remove after testing
