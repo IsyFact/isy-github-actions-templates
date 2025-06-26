@@ -159,6 +159,9 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
       - name: Output length of server-username and server-password # TODO: remove after testing
+        env: 
+          DEPLOY_SERVER_USERNAME: ${{ secrets.MAVEN_CENTRAL_USER_NAME }}
+          DEPLOY_SERVER_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
         run: |
           echo "Length of DEPLOY_SERVER_USERNAME: ${#DEPLOY_SERVER_USERNAME}"
           echo "Length of DEPLOY_SERVER_TOKEN: ${#DEPLOY_SERVER_TOKEN}"
