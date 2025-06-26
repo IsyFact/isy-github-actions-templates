@@ -158,13 +158,6 @@ jobs:
           server-password: DEPLOY_SERVER_TOKEN
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: GPG_PASSPHRASE
-      - name: Output length of server-username and server-password # TODO: remove after testing
-        run: |
-          echo "Length of DEPLOY_SERVER_USERNAME: ${#DEPLOY_SERVER_USERNAME}"
-          echo "Length of DEPLOY_SERVER_TOKEN: ${#DEPLOY_SERVER_TOKEN}"
-        env: 
-          DEPLOY_SERVER_USERNAME: ${{ secrets.DEPLOY_SERVER_USER_NAME }}
-          DEPLOY_SERVER_TOKEN: ${{ secrets.DEPLOY_SERVER_TOKEN }}
       - name: Setup variables for signing and sbom
         run: |
           echo "CYCLONEDX_SBOM_OPTS=$([ ${{ inputs.sbom }} == "true" ] && echo "cyclonedx:makeBom" || echo "")" >> $GITHUB_ENV
