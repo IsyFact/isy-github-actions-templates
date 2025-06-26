@@ -163,7 +163,7 @@ jobs:
           echo "Length of DEPLOY_SERVER_USERNAME: ${#DEPLOY_SERVER_USERNAME}"
           echo "Length of DEPLOY_SERVER_TOKEN: ${#DEPLOY_SERVER_TOKEN}"
         env: 
-          DEPLOY_SERVER_USERNAME: ${{ secrets.DEPLOY_SERVER_USERNAME }}
+          DEPLOY_SERVER_USERNAME: ${{ secrets.DEPLOY_SERVER_USER_NAME }}
           DEPLOY_SERVER_TOKEN: ${{ secrets.DEPLOY_SERVER_TOKEN }}
       - name: Setup variables for signing and sbom
         run: |
@@ -172,8 +172,8 @@ jobs:
       - name: SBOM, GPG Signing & Deployment
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          DEPLOY_SERVER_USERNAME: ${{ secrets.MAVEN_CENTRAL_USER_NAME }}
-          DEPLOY_SERVER_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
+          DEPLOY_SERVER_USERNAME: ${{ secrets.DEPLOY_SERVER_USER_NAME }}
+          DEPLOY_SERVER_TOKEN: ${{ secrets.DEPLOY_SERVER_TOKEN }}
           DEPLOY_SERVER_ID: ${{ inputs.deploy-server-id }}
           DEPLOYURL_RELEASE: ${{ inputs.deploy-url-release }}
           DEPLOYURL_SNAPSHOT: ${{ inputs.deploy-url-snapshot }}
