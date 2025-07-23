@@ -1,0 +1,44 @@
+name: SonarCloud Quality Gate Check
+
+on:
+  workflow_call:
+    inputs:
+      branch_ref:
+        description: "Branch name for Quality Gate Check"
+        required: true
+        type: string
+
+jobs:
+  QualityGate:
+    runs-on: ubuntu-latest
+    env:
+      SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}
+      SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+      COMMIT_SHA: ${{ github.sha }}
+    steps:
+      - name: SonarCloud Quality Gate Check
+        run: |
+          ANALYSIS_ID=$( curl --silent "${SONAR_HOST_URL}/api/project_analyses/search?project=${SONAR_PROJECT_KEY}&branch=${BRANCH_REF/\//%2F}" | jq -r "first(.analyses[]|select(.revision==\"$COMMIT_SHA\").key)")
+          
+          if [[ -z $ANALYSIS_ID ]]; then
+            echo "No SonarCloud Scan result found for commit $COMMIT_SHA"
+            exit 1
+          fi
+          
+          if [[ -z $ANALYSIS_ID ]]; then
+            echo "No SonarCloud Scan result found for commit $COMMIT_SHA"
+            exit 1
+          fi
+          
+          QG_STATUS=$(curl --silent "${SONAR_HOST_URL}/api/qualitygates/project_status?analysisId=${ANALYSIS_ID}" | jq -r ".projectStatus.status")
+          
+          if [[ $QG_STATUS == "OK" ]]; then
+            echo "Quality Gate passed"
+            exit 0
+          elif [[ $QG_STATUS == "ERROR" ]]; then
+            echo "Quality Gate failed"
+            exit 1
+          else
+            echo "Could not find Quality Gate information for analysis id ${ANALYSIS_ID}"
+            exit 1
+          fi

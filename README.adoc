@@ -62,7 +62,7 @@ Führt die beiden Maven Plugins `checkstyle` und ‚spotbugs‘ aus. Der Job wir
 Führt das Maven Plugin `SonarScan` aus. Der Scan wird nach dem Job `Test` ausgeführt, damit dessen Ergebnisse (insb. die Test Coverage) auch auf Sonar Cloud verfügbar sind. Dieser Job ist optional und wird nur ausgeführt, wenn ein Sonar Projekt Key konfiguriert wurde. Dieser Job schlägt nur fehl, wenn es nicht möglich war eine Analyse durchzuführen. Die Prüfung, ob das zugehörige Quality Gate erfüllt wurde, erfolgt in SonarCloud und wird über einen zusätzlichen Status Check angezeigt. Zudem wird dieser Job nicht bei Pull Requests, die durch den Dependabot erstellt wurden, gestartet, da der Dependabot keinen Zugriff auf das `SONAR_TOKEN` hat.
 
 - *Commit Message Checker*: +
-Gleicht die Commit Messages mit einem RegEx-Pattern ab und gibt eine Success bzw. Error Message aus, je nachdem, ob sie der Konvention entsprechen. Ein GitHub-Token (`secrets.GITHUB_TOKEN`), welches ausschließlich ein Lese-Recht auf Inhalte besitzt, wird zur Authentifizierung verwendet.
+Gleicht die Commit-Messages mit einem RegEx-Pattern ab und gibt eine Success bzw. Error Message aus, je nachdem, ob sie der Konvention entsprechen. Ein GitHub-Token (`secrets.GITHUB_TOKEN`), welches ausschließlich ein Lese-Recht auf Inhalte besitzt, wird zur Authentifizierung verwendet.
 
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
@@ -104,6 +104,16 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |`scan-dependency-management` |Nein |`true` | Scannen von Dependencies in Dependency Management
 4+^|*Secrets*
 |`SNYK_TOKEN` |Ja | |Token zur Authentifizierung bei Snyk
+|===
+
+=== SonarCloud Quality Gate Check Template
+
+Das Template `quality_gate_check_template.yml` ermöglicht eine automatisierte SonarCloud Quality Gate-Überprüfung für einen bestimmten Branch und stellt sicher, dass die erforderlichen Code-Qualitätsstandards erfüllt sind. Der Workflow führt eine branch-spezifische Analyse durch und gibt den Quality Gate-Status zurück. Beim Nichtbestehen markiert er den Workflow als fehlerhaft, um Probleme sofort zu kennzeichnen.
+
+[width="100%",cols="20%,^14%,^18%,48%",options="header",]
+|===
+^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
+|`branch_ref` |`true` | |Der Branch-Name, für den der Quality Gate Check durchgeführt werden soll
 |===
 
 === Deploy Template

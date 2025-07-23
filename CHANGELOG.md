@@ -1,3 +1,10 @@
+# v1.7.0
+## Features
+- `IFS-4383`:
+  - Ausschluss von Pom-Typ-Dependencies vom Snyk-Scan
+  - Deaktivierung des Snyk-Scans von Dependencies in Dependency Management als Standard
+  - Hinzufügen eines Templates für den Sonarcloud Quality Gate Check
+
 # v1.6.0
 ## Features
 - `IFS-2857`:
