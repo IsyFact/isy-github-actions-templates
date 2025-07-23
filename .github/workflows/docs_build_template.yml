@@ -172,8 +172,8 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: thollander/actions-comment-pull-request@v3.0.1
         with:
-          filePath: formatted_logs.md
-          comment_tag: antora-logs
+          file-path: formatted_logs.md
+          comment-tag: antora-logs
 
       - name: Fail the workflow if Antora build fails
         run: |          
