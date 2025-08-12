@@ -161,7 +161,7 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
       - name: Download Test Reports
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: Test Reports
       - name: Run SonarCloud Scan
