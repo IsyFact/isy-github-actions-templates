@@ -207,3 +207,8 @@ Das Template `update_antora_version_template.yml` dient dazu, die Version in der
 
 Mithilfe des Templates `maven_create_release_template.yml` wird automatisch ein Release aus einem Tag heraus erstellt.
 Die Datei `CHANGELOG.md` im jeweiligen Repository wird als Release Notes verwendet und dargestellt.
+
+=== Dependabot Auto Changelog Template
+
+Mithilfe des Templates `dependabot_auto_changelog_template.yml` wird automatisch ein Changelog-Eintrag in einem Dependabot Merge-Request erstellt.
+Dieser wird unter der Überschrift `Dependency Upgrades` zusammengefasst.

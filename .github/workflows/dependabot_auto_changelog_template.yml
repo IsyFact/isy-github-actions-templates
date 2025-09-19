@@ -1,0 +1,63 @@
+name: Template for Auto-Changelog for Dependabot Pull Requests
+
+on:
+  workflow_call:
+
+jobs:
+  add_changelog_entry:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor == 'dependabot[bot]' }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Extract package & version
+        shell: bash
+        run: |
+          title="${{ github.event.pull_request.title }}"
+          pkg=$(echo "$title" | sed -E 's/.*[bB]ump[[:space:]]([^ ]+).*/\1/') 
+          new_version=$(echo "$title" | sed -E 's/.*to[[:space:]]([^ ]+).*/\1/') 
+          old_version=$(echo "$title" | sed -E 's/.*from[[:space:]]([^ ]+).*/\1/')
+          echo "pkg=$pkg" >> $GITHUB_ENV
+          echo "new_version=$new_version" >> $GITHUB_ENV
+          echo "old_version=$old_version" >> $GITHUB_ENV
+
+      - name: Ensure Dependency Upgrades section
+        shell: bash
+        run: |
+          # Create file if no changelog exists
+          if [ ! -f CHANGELOG.md ]; then
+            echo "# 0.0.0" > CHANGELOG.md
+          fi
+
+          # Determine the line number of the second version header
+          second=$(grep -n '^# ' CHANGELOG.md | sed -n '2p' | cut -d: -f1)
+
+          # Check if the "### DEPENDENCY UPGRADES" section is present before the second version header
+          if ! head -n $((second-1)) CHANGELOG.md \
+            | grep -q '^### DEPENDENCY UPGRADES'; then            
+            if [ -z "$second" ]; then
+              # No second version header found: trim file and append at end of file
+              sed -i -e :a -e '/^\n*$/{$d;N;};/\n$/ba' CHANGELOG.md
+              sed -i '$a\\n### DEPENDENCY UPGRADES\n' CHANGELOG.md
+            else
+              # Insert "### DEPENDENCY UPGRADES" one line before the second version header
+              sed -i "$((second-1))a### DEPENDENCY UPGRADES\n" CHANGELOG.md
+            fi
+          fi
+
+      - name: Add changelog entry
+        shell: bash
+        run: |
+          sed -i "/^### DEPENDENCY UPGRADES/a - Update $pkg von Version $old_version auf $new_version" CHANGELOG.md
+
+      - name: Commit & push entry
+        uses: stefanzweifel/git-auto-commit-action@v6
+        with:
+          commit_message: >
+            chore: adds changelog entry after upgrading
+            ${{ env.pkg }} from ${{ env.old_version }} to ${{ env.new_version }}
+          branch: ${{ github.event.pull_request.head.ref }}
