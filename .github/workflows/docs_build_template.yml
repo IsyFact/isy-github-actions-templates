@@ -68,8 +68,8 @@ jobs:
           repo: isyfact.github.io
           owner: IsyFact
           run_id: ${{ steps.trigger_build.outputs.run_id }}
-          run_timeout_seconds: 300 # 5 minutes (optional)
-          poll_interval_ms: 5000 # 5 seconds (optional)
+          run_timeout_seconds: 900 # 15 minutes (optional)
+          poll_interval_ms: 15000 # 15 seconds (optional)
 
       - name: Fetch and extract Build Documentation logs
         if: ${{ steps.adoc-changes.outputs.pr_build }}
