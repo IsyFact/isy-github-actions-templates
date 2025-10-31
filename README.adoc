@@ -11,12 +11,9 @@ endif::[]
 
 Dieses Repository beinhaltet GitHub Action Templates (https://docs.github.com/en/actions/using-workflows/reusing-workflows[Reusable Workflows]). Diese Templates können in bereits vorhandene https://docs.github.com/en/actions/using-workflows/about-workflows[Workflows] eingebunden werden, um ihre Funktionalität mit sehr geringem Aufwand an anderer Stelle nutzen zu können.
 
-.Beispiel-Szenario
-====
-Der https://github.com/GsActions/commit-message-checker[Commit Message Checker] ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen.
+Ein Beispiel-Szenario dazu: Der https://github.com/GsActions/commit-message-checker[Commit Message Checker] ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen.
 Diese Funktionalität ist in einigen meiner Repositories gewünscht, wobei der Commit Message Checker überall gleich konfiguriert sein soll.
 Statt die Action in jedem Repository einzeln einzubinden und zu konfigurieren, erstellt man ein Template in einem Repository mit der gewünschten Konfiguration und ruft dieses in allen anderen auf.
-====
 
 == Entkopplungs-Workflows
 
