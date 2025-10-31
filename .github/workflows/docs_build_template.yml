@@ -22,9 +22,27 @@ jobs:
   TriggerDocsBuild:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          fetch-depth: 0
+
+      - name: Check if PR documentation build is necessary
+        id: adoc-changes
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q ".adoc"; then
+            echo "pr_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "pr_build=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Trigger documentation build
         uses: codex-/return-dispatch@v2.1.0
         id: trigger_build
+        if: ${{ github.event_name == 'push' || steps.adoc-changes.outputs.pr_build }}
         with:
           token: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
           ref: main
@@ -43,6 +61,7 @@ jobs:
       - name: Wait for documentation build completion (Run ID - ${{ steps.trigger_build.outputs.run_id }})
         uses: codex-/await-remote-run@v1.13.0
         id: wait_for_completion
+        if: ${{ github.event_name == 'push' || steps.adoc-changes.outputs.pr_build }}
         continue-on-error: true
         with:
           token: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
@@ -53,6 +72,7 @@ jobs:
           poll_interval_ms: 5000 # 5 seconds (optional)
 
       - name: Fetch and extract Build Documentation logs
+        if: ${{ steps.adoc-changes.outputs.pr_build }}
         env:
           GH_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
           OWNER: IsyFact
@@ -91,6 +111,7 @@ jobs:
           fi
 
       - name: Format and generate logs markdown
+        if: ${{ steps.adoc-changes.outputs.pr_build }}
         run: |  
           input_file="cleaned_logs.txt"
           output_file="formatted_logs.md"
@@ -172,13 +193,14 @@ jobs:
           echo -e "\n${completion_status}" >> "$output_file"
 
       - name: Comment logs on PR
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ steps.adoc-changes.outputs.pr_build }}
         uses: thollander/actions-comment-pull-request@v3.0.1
         with:
           file-path: formatted_logs.md
           comment-tag: antora-logs
 
       - name: Fail the workflow if Antora build fails
+        if: ${{ steps.adoc-changes.outputs.pr_build }}
         run: |          
           if grep -q "Antora documentation build failed." cleaned_logs.txt; then
             echo -e "\033[0;31mAntora documentation build failed.\033[0m"
