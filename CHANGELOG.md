@@ -5,6 +5,7 @@
 
 ### MIGRATION GUIDE
 
-Das Template "Update Antora Version" entfällt ersatzlos und darf nicht mehr aufgerufen werden, weil die Versionen der Antora-Komponenten zentral verwaltet werden.
+Das Template "Update Antora Version" entfällt ersatzlos. 
+Die Versionen der Antora-Komponenten werden zentral verwaltet.
 
 ### DEPENDENCY UPGRADES
