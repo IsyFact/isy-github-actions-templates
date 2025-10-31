@@ -34,7 +34,10 @@ jobs:
           workflow_inputs: |
             {
               "log_level": "${{ inputs.log_level }}",
-              "failure_level": "${{ inputs.failure_level }}"
+              "failure_level": "${{ inputs.failure_level }}",
+              "pr_repo": ${{ github.repository }},
+              "pr_branch": ${{ github.ref }},
+              "pr_target": ${{ github.base_ref }}
             }
 
       - name: Wait for documentation build completion (Run ID - ${{ steps.trigger_build.outputs.run_id }})
