@@ -1,10 +1,22 @@
 = isy-github-actions-templates
+ifdef::env-github[]
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
 :toc:
 
 
 Dieses Repository beinhaltet GitHub Action Templates (https://docs.github.com/en/actions/using-workflows/reusing-workflows[Reusable Workflows]). Diese Templates können in bereits vorhandene https://docs.github.com/en/actions/using-workflows/about-workflows[Workflows] eingebunden werden, um ihre Funktionalität mit sehr geringem Aufwand an anderer Stelle nutzen zu können.
 
-Ein Beispiel-Szenario dazu wäre: Der https://github.com/GsActions/commit-message-checker[Commit Message Checker] ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen. Diese Funktionalität ist nun in einigen meiner Repositories mit gewünscht, wobei der Commit Message Checker überall gleich konfiguriert sein soll. Statt die Action nun also in jedem Repository einzeln einzubinden und zu konfigurieren, erstellt man ein Template in einem Repository mit der gewünschten Konfiguration und ruft dieses in allen anderen auf.
+.Beispiel-Szenario
+====
+Der https://github.com/GsActions/commit-message-checker[Commit Message Checker] ist eine fertige GitHub Action, welche es ermöglicht, Commit Messages nach einem RegEx-Muster zu prüfen.
+Diese Funktionalität ist in einigen meiner Repositories gewünscht, wobei der Commit Message Checker überall gleich konfiguriert sein soll.
+Statt die Action in jedem Repository einzeln einzubinden und zu konfigurieren, erstellt man ein Template in einem Repository mit der gewünschten Konfiguration und ruft dieses in allen anderen auf.
+====
 
 == Entkopplungs-Workflows
 
@@ -14,7 +26,7 @@ image::git_workflows.jpg[]
 
 === Next Version Template
 
-Das Template next_version.yml stellt einen Job zur Berechnung der Versionsnummer eines Builds bereit.
+Das Template `next_version.yml` stellt einen Job zur Berechnung der Versionsnummer eines Builds bereit.
 Dazu nutzt es die Action Semantic Version (https://github.com/PaulHatch/semantic-Dversion),
 welche die Version auf Basis von Conventional Commits bestimmt.
 Die berechnete Version ist als Ausgabe `next-version` für andere Jobs in einem Workflow verfügbar.
@@ -28,7 +40,6 @@ Die berechnete Version ist als Ausgabe `next-version` für andere Jobs in einem 
 ==== Verwenden der berechneten Version in anderen Jobs
 
 [source,yaml]
-[source]
 ----
 jobs:
   Version:
@@ -41,19 +52,19 @@ jobs:
 ----
 
 NOTE: Da hier eine Action aus dem GitHub Market von einem Dritten verwendet wird,
-wird in dem Template sichergestellt, dass das GitHub Token nur die Rechte contents:read bereitstellt.
-Zudem wird die berechnete Version mit dem regulären Ausdruck `^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$` auf Korrektheit geprüft.
+wird in dem Template sichergestellt, dass das GitHub Token nur die Rechte `contents:read` bereitstellt.
+Zudem wird die berechnete Version mit dem regulären Ausdruck `^(0|[1-9][0-9]+*+)\.(0|[1-9][0-9]+*+)\.(0|[1-9][0-9]*)$` auf Korrektheit geprüft.
 
 
 === Build Template
 
-Das Template maven_build_template.yml bietet einen Workflow zum Bauen und Testen von Java/Maven Projekten. Es enthält folgende Jobs:
+Das Template `maven_build_template.yml` bietet einen Workflow zum Bauen und Testen von Java/Maven Projekten. Es enthält folgende Jobs:
 
 - *Compile*: +
 Führt das Maven Goal `compile` aus.
 
 - *Test*: +
-Führt das Maven Goal `test` aus
+Führt das Maven Goal `test` aus.
 
 - *CodeQuality*: +
 Führt die beiden Maven Plugins `checkstyle` und ‚spotbugs‘ aus. Der Job wird nur ausgeführt, wenn für ein Projekt Sonar (`SONAR_PROJECT_KEY`) nicht konfiguriert wurde.
@@ -62,7 +73,7 @@ Führt die beiden Maven Plugins `checkstyle` und ‚spotbugs‘ aus. Der Job wir
 Führt das Maven Plugin `SonarScan` aus. Der Scan wird nach dem Job `Test` ausgeführt, damit dessen Ergebnisse (insb. die Test Coverage) auch auf Sonar Cloud verfügbar sind. Dieser Job ist optional und wird nur ausgeführt, wenn ein Sonar Projekt Key konfiguriert wurde. Dieser Job schlägt nur fehl, wenn es nicht möglich war eine Analyse durchzuführen. Die Prüfung, ob das zugehörige Quality Gate erfüllt wurde, erfolgt in SonarCloud und wird über einen zusätzlichen Status Check angezeigt. Zudem wird dieser Job nicht bei Pull Requests, die durch den Dependabot erstellt wurden, gestartet, da der Dependabot keinen Zugriff auf das `SONAR_TOKEN` hat.
 
 - *Commit Message Checker*: +
-Gleicht die Commit Messages mit einem RegEx-Pattern ab und gibt eine Success bzw. Error Message aus, je nachdem, ob sie der Konvention entsprechen. Ein GitHub-Token (`secrets.GITHUB_TOKEN`), welches ausschließlich ein Lese-Recht auf Inhalte besitzt, wird zur Authentifizierung verwendet.
+Gleicht die Commit-Messages mit einem RegEx-Pattern ab und gibt eine Success bzw. Error Message aus, je nachdem, ob sie der Konvention entsprechen. Ein GitHub-Token (`secrets.GITHUB_TOKEN`), welches ausschließlich ein Lese-Recht auf Inhalte besitzt, wird zur Authentifizierung verwendet.
 
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
@@ -87,7 +98,7 @@ Die Datei `dependency_review_config.yml` definiert die Lizenztypen, die in den P
 
 === Dependency Scan Template
 
-Das Template `maven_depenency_scan_template.yml` wurde entwickelt, um Snyk für die Monitoring und Scanning der Open-Source-Dependencies eines Maven-Projektes zu integrieren. Sie enthält verschiedene konfigurierbare Inputs, um die Einrichtung und Ausführung des Dependency-Scan-Prozesses anzupassen.
+Das Template `maven_depenency_scan_template.yml` wurde entwickelt, um Snyk für das Monitoring und Scanning der Open-Source-Dependencies eines Maven-Projektes zu integrieren. Sie enthält verschiedene konfigurierbare Inputs, um die Einrichtung und Ausführung des Dependency-Scan-Prozesses anzupassen.
 
 Beim Aufruf des Templates können folgende Parameter übergeben werden:
 
@@ -199,9 +210,6 @@ Wenn der Antora-Build fehlschlägt, ist der Workflow so konzipiert, dass er eben
 |
 | GitHub-Token zum Auslösen des Dokumentations-Builds
 |===
-
-=== Update Antora Version Template
-Das Template `update_antora_version_template.yml` dient dazu, die Version in der Datei `antora.yml` automatisch zu aktualisieren, wenn ein neuer Release-Branch erstellt wird. Der Workflow nutzt das Event `workflow_call`, um den `antora.yml`-Pfad zu setzen, die Versionsdetails aus dem Branch-Namen zu extrahieren und die Datei zu aktualisieren. Danach werden die Änderungen in den aktuellen Branch gepusht. Dies automatisiert den Prozess der Versionsverwaltung in der Dokumentation und sorgt für Konsistenz und Effizienz.
 
 === Create Release Template
 
