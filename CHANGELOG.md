@@ -1,11 +1,4 @@
-# 1.8.0
+# 2.0.0
 ### FEATURES
-* `IFS-4739`: Entfernung des Templates "Update Antora Version"
-* `IFS-4838`: Hinzufügen des `Dependabot Auto Changelog` als Template 
+* `IFS-4861`: Verwendung von JDK25 als Default in Templates
 
-### MIGRATION GUIDE
-
-Das Template "Update Antora Version" entfällt ersatzlos. 
-Die Versionen der Antora-Komponenten werden zentral verwaltet.
-
-### DEPENDENCY UPGRADES
