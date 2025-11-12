@@ -6,7 +6,7 @@ on:
         description: 'JDK version'
         required: false
         type: number
-        default: 17
+        default: 25
       maven-opts:
         description: 'Custom Maven arguments'
         required: false

@@ -6,7 +6,7 @@ on:
         description: 'JDK Version'
         required: false
         type: number
-        default: 17
+        default: 25
       version:
         description: 'Version for Maven CI Friendly Versions'
         required: true
