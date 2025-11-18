@@ -78,7 +78,7 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 [width="100%",cols="20%,^15%,^20%,45%",options="header",]
 |===
 ^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
-|`jdk-version` |Nein |`17` |Version des zu verwendenden JDKs
+|`jdk-version` |Nein |`25` |Version des zu verwendenden JDKs
 |`maven-opts` |Nein |`""` |Zusätzliche Argumente, die an Maven weitergegeben werden
 |`checkout-lfs` |Nein |`false` |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
 |`version` |Nein |`0.0.0-SNAPSHOT` |Version für Maven CI Friendly Versions
@@ -102,7 +102,7 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 [width="100%",cols="20%,^14%,^18%,48%",options="header",]
 |===
 ^|Eingabe ^|Erforderlich ^|Standardwert ^|Beschreibung
-|`jdk-version` |Nein |`17` |Version des zu verwendenden JDKs
+|`jdk-version` |Nein |`25` |Version des zu verwendenden JDKs
 |`checkout-lfs` |Nein |`false` |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
 |`snyk-organization` |Nein | |Organisations-ID für die Zuordnung auf Snyk
 |`snyk-reference` |Ja | |Referenz für das Ergebnis auf Snyk, z.B. Branchname
@@ -133,7 +133,7 @@ Beim Aufruf des Templates können folgende Parameter übergeben werden:
 |===
 |Eingabe                    |Erforderlich |Standardwert |Beschreibung
 
-|`jdk-version`              |`false`      |`17`         |JDK Version
+|`jdk-version`              |`false`      |`25`         |JDK Version
 |`version`                  |`true`       |             |Version des zu deployenden Artefakts
 |`maven-opts`               |`false`      |`""`         |Zusätzliche Argumente, die an Maven weitergegeben werden
 |`checkout-lfs`             |`false`      |`false`      |Gibt an, ob LFS-Dateien mit auf den Runner geklont werden
