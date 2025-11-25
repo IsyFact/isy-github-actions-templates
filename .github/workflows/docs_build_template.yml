@@ -34,7 +34,7 @@ jobs:
         continue-on-error: true
         run: |
           git fetch origin ${{ github.base_ref }}
-          adoc_changes=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q ".adoc")
+          adoc_changes=$(git diff --name-only origin/${{ github.base_ref }}...HEAD) # | grep -q ".adoc")
           echo "::notice title=adoc_changes: $adoc_changes (length: ${#adoc_changes})"
           if [[ -z "$adoc_changes" ]]; then
             echo "pr_build=false" >> $GITHUB_OUTPUT
