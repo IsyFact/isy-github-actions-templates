@@ -164,28 +164,24 @@ Das Template `pr_agent_template.yml` automatisiert PR-Analyse und Feedback unter
 Standardmäßig werden die Befehle `/describe`, `/review`, `/improve` ausgeführt. Eine vollständige Liste der Befehle und ihrer Beschreibungen können unter https://pr-agent-docs.codium.ai/tools/[PR-Agent Documentation/Tools] gefunden werden oder durch Kommentieren des Befehls `/help` im PR.
 
 === Docs Build Template
-Das Template `docs_build_template.yml` erleichtert die automatische Initiierung von Dokumentations-Builds für Antora-Projekte.
+Das Template `docs_build_template.yml` erleichtert die automatische Durchführung von Builds der Dokumentation für Antora-Projekte.
+Es ist aktuell für die Erstellung von Release-Dokumentation und zum Kommentieren von Pull Requests mit Änderungen an der Dokumentation gedacht.
 
-==== Features:
-
-- *Auslösen der Dokumentationserstellung*:
+*Auslösen der Dokumentationserstellung*:
 Der Workflow löst den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` unter Verwendung der GitHub CLI aus.
+Er wartet, bis der ausgelöste Build abgeschlossen ist.
+Wenn der Wokflow durch einen Pull Request gestartet wurde, verarbeitet er das als Artefakt veröffentlichte Antora-Log und bereitet es im Markdown-Format auf, um eine Übersicht des Builds und relevanter Log-Einträge als PR-Kommentar zu veröffentlichen.
 
-- *Anpassbare Logging*:
-Der Workflow ermöglicht es Users, den Log-Schweregrad (`log_level`) und den Log-Fehlerschweregrad (`failure_level`) für den Antora-Build anzugeben. Diese Eingaben sind optional, wobei die Standardwerte auf `info` bzw. `fatal` gesetzt sind.
+*Anpassbares Logging*:
+Der Workflow ermöglicht es, das Logging des Antora-Builds zu steuern:
 
-- *Verarbeitung der Logs*:
-Der Workflow wartet, bis der ausgelöste Dokumentationsaufbau abgeschlossen ist.
-Dann holt er die Logs ab und verarbeitet sie, indem er die relevanten Abschnitte extrahiert und bereinigt.
-Die bereinigten Logs werden in einer Markdown-Datei formatiert, sodass sie als PR-Kommentar gelesen werden können.
+- Parameter `log_level`: Spezifiziert den Schweregrad, ab dem eine Nachricht ins Log geschrieben wird. Weitere Details: https://docs.antora.org/antora/latest/playbook/runtime-log-level/[Antora: Log Severity Level].
+- Parameter `failure_level` : Spezifiziert den Schweregrad, ab dem der Antora-Build mit einem Fehlercode (Rückgabewert ungleich 0) antwortet. Weitere Details: https://docs.antora.org/antora/latest/playbook/runtime-log-failure-level/[Antora: Log Failure Level].
 
-- *Integration von Pull-Requests*:
-Wenn der Workflow durch einen PR ausgelöst wird, werden die formatierten Logs als Kommentar zum PR veröffentlicht.
+//*Fehlerbehandlung*:
+//Wenn der Antora-Build fehlschlägt, ist der Workflow so konzipiert, dass er ebenfalls fehlschlägt, um sicherzustellen, dass alle Probleme sofort gekennzeichnet werden.
 
-- *Fehlerbehandlung*:
-Wenn der Antora-Build fehlschlägt, ist der Workflow so konzipiert, dass er ebenfalls fehlschlägt, um sicherzustellen, dass alle Probleme sofort gekennzeichnet werden.
-
-==== Parameters:
+==== Parameter
 [options="header"]
 |===
 | Eingabe | Erforderlich | Standardwert | Beschreibung
@@ -193,20 +189,50 @@ Wenn der Antora-Build fehlschlägt, ist der Workflow so konzipiert, dass er eben
 | `log_level`
 | Nein
 | `info`
-| Log-Schweregrad für den Antora-Build (`debug`, `info`, `warn`, `error`)
+| https://docs.antora.org/antora/latest/playbook/runtime-log-level/[Antora: Log Severity Level]
 
 | `failure_level`
 | Nein
 | `fatal`
-| Log-Fehlerschweregrad für den Antora-Build (`fatal`, `error`, `warn`, `none`)
+| https://docs.antora.org/antora/latest/playbook/runtime-log-failure-level/[Antora: Log Failure Level]
 
-|*Secrets* |  |  |
+h|*Secrets* h|  h|  h|
 
 | `ANTORA_TRIGGER_TOKEN`
 | Ja
 |
-| GitHub-Token zum Auslösen des Dokumentations-Builds
+| GitHub-Token zum Auslösen des Antora-Builds
 |===
+
+==== Nutzung zur Veröffentlichung eines Releases
+[source,yaml]
+----
+on:
+  push:
+    tags:
+      - '^\\d+\\.\\d+\\.\\d+$'
+
+jobs:
+  Build:
+    uses: IsyFact/isy-github-actions-templates/.github/workflows/docs_build_template.yml@main <.>
+    secrets:
+      ANTORA_TRIGGER_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
+----
+<.> Für die Verwendung eines stabilen Standes muss eine Release-Version gesetzt werden.
+
+==== Nutzung für die Kommentierung von PRs
+[source,yaml]
+----
+on:
+  pull_request:
+    types: [ opened, synchronize, reopened ]
+
+jobs:
+  Build:
+    uses:  IsyFact/isy-github-actions-templates/.github/workflows/docs_build_template.yml@main
+    secrets:
+      ANTORA_TRIGGER_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
+----
 
 === Create Release Template
 

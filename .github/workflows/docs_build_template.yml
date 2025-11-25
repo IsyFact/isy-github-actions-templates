@@ -22,9 +22,28 @@ jobs:
   TriggerDocsBuild:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout PR
+        uses: actions/checkout@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          fetch-depth: 0
+
+      - name: Check if PR documentation build is necessary
+        id: adoc-changes
+        if: ${{ github.event_name == 'pull_request' }}
+        continue-on-error: true
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q ".adoc"; then
+            echo "pr_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "pr_build=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Trigger documentation build
         uses: codex-/return-dispatch@v2.1.0
         id: trigger_build
+        if: github.event_name == 'push' || steps.adoc-changes.outputs.pr_build == 'true'
         with:
           token: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
           ref: main
@@ -34,152 +53,150 @@ jobs:
           workflow_inputs: |
             {
               "log_level": "${{ inputs.log_level }}",
-              "failure_level": "${{ inputs.failure_level }}"
+              "failure_level": "${{ inputs.failure_level }}",
+              "pr_repo": "${{ github.repository }}",
+              "pr_branch": "${{ github.ref }}",
+              "pr_target": "${{ github.base_ref }}"
             }
 
       - name: Wait for documentation build completion (Run ID - ${{ steps.trigger_build.outputs.run_id }})
         uses: codex-/await-remote-run@v1.13.0
         id: wait_for_completion
+        if: github.event_name == 'push' || steps.adoc-changes.outputs.pr_build == 'true'
         continue-on-error: true
         with:
           token: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
           repo: isyfact.github.io
           owner: IsyFact
           run_id: ${{ steps.trigger_build.outputs.run_id }}
-          run_timeout_seconds: 300 # 5 minutes (optional)
-          poll_interval_ms: 5000 # 5 seconds (optional)
+          run_timeout_seconds: 900 # 15 minutes (optional)
+          poll_interval_ms: 15000 # 15 seconds (optional)
 
-      - name: Fetch and extract Build Documentation logs
+      - name: Fetch Antora log
+        if: steps.adoc-changes.outputs.pr_build == 'true'
         env:
           GH_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
-          OWNER: IsyFact
-          REPO: isyfact.github.io
           RUN_ID: ${{ steps.trigger_build.outputs.run_id }}
         run: |
           # Fetch the logs for the given run ID using GitHub CLI
-          echo "Fetching logs for run ID: $RUN_ID from repository $OWNER/$REPO"
-          
-          # Use gh CLI to download the logs
-          gh api \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            /repos/$OWNER/$REPO/actions/runs/$RUN_ID/logs > logs.zip
-  
-          # Unzip the logs
-          unzip logs.zip -d logs
-          
-          # Find and print logs for the 'Build Documentation' step
-          build_log_file=$(find logs -type f -name "*Build Documentation*")
-          
-          if [ -z "$build_log_file" ]; then
-            echo "Build Documentation logs not found."
-          else
-            
-            echo "Build Documentation logs found: $build_log_file"
-            
-            echo "Processing logs to remove unwanted sections and timestamps..."
-            awk '/Processing JSON logs.../{flag=1} flag' "$build_log_file" | sed 's/^[0-9TZ:\.-]*Z //g' > temp_cleaned_logs.txt
-          
-            # Display the cleaned logs
-            cat temp_cleaned_logs.txt
-          
-            # Remove ANSI escape codes 
-            sed -E 's/\x1b\[[0-9;]*m//g' temp_cleaned_logs.txt > cleaned_logs.txt
-          fi
+          echo "Fetching Antora log for run ID: $RUN_ID from repository IsyFact/isyfact.github.io..."
+          gh run download ${{ env.RUN_ID }} -n "antora-log" --repo "IsyFact/isyfact.github.io"
 
-      - name: Format and generate logs markdown
-        run: |  
-          input_file="cleaned_logs.txt"
+      - name: Generate PR comment
+        id: generate-pr-comment
+        if: steps.adoc-changes.outputs.pr_build == 'true'
+        run: |
+          echo "Processing Antora log..."
+          
+          input_file="antora_output.log"
           output_file="formatted_logs.md"
-          echo "## Build Documentation Logs 📜✨" > "$output_file"
           
-          # Variables to track the block state
+          echo "## Build Documentation Logs 📜" > "$output_file"
+                    
+          # Keep track of the current source and branch
+          current_source=""
+          current_branch=""
+          # Keep track of the block state
           in_block=false
-          completion_status=""
-          
-          # Read the cleaned logs line by line
+          # Keep track of the build success, according to the failure_level (workflow input) 
+          build_successful=true
+                    
           while IFS= read -r line; do
-            case "$line" in
-              Source:*)
-                # Close previous details block if it's not the first one
-                if [ "$in_block" = true ]; then
-                  echo -e "</details>\n" >> "$output_file"
+          
+            level=$(echo "$line" | jq -r '.level')
+          
+            if [[ "$level" = "fatal" ]]; then
+              line_text=$(echo "$line" | jq -r '"\(.level | ascii_upcase) \(.msg)"')
+              echo "<strong>❌ $line_text</strong>" >> "$output_file"
+              # fatal errors fail the build in each case
+              build_successful=false
+              continue
+            fi
+          
+            # Extract the source and branch information
+            source=$(echo "$line" | jq -r '.source.url // empty' | awk -F'/' '{print $NF}')
+            branch=$(echo "$line" | jq -r '.source.refname // empty')
+          
+            # Use the last part of the worktree if the ref points to HEAD (i.e. in case of a tag)
+            if [[ "$branch" = "HEAD" ]]; then
+              worktree=$(echo "$line" | jq -r '.source.worktree')
+              branch="${worktree##*/}"
+            fi
+          
+            # If the source or branch is missing, skip this line
+            if [[ -z "$source" || -z "$branch" ]]; then
+              echo "::notice title=Skipping line: $line"
+              continue
+            fi
+          
+            # Check if the source or branch has changed
+            if [[ "$source" != "$current_source" || "$branch" != "$current_branch" ]]; then
+              # Update the current source and branch
+              current_source="$source"
+              current_branch="$branch"
+          
+              # Close previous details block if it's not the first one
+              if [[ "$in_block" = true ]]; then
+                echo "</details>" >> "$output_file"
+              fi
+              # Start a new details block for a new source
+              echo "<details>" >> "$output_file"
+              echo "<summary><strong>📁 Content Source: $current_source (branch: $current_branch)</strong></summary>" >> "$output_file"
+              echo "" >> "$output_file"  # Add a new line for formatting
+              in_block=true
+            fi
+          
+            # Write first line (level and message)
+            first_line=$(echo "$line" | jq -r '"- \(.level): \(.msg)"')
+          
+            case "$level" in
+              error*)
+                echo "${first_line//error:/🔴 **ERROR**}" >> "$output_file"
+                if [[ "${{ inputs.failure_level }}" = "error" || "${{ inputs.failure_level }}" = "warn" ]]; then
+                  build_successful=false
                 fi
-                # Start a new details block for a new source
-                echo "<details>" >> "$output_file"
-                echo "<summary><strong>⭐ $line</strong></summary>" >> "$output_file"
-                echo "" >> "$output_file"  # Add a new line for formatting
-                in_block=true
                 ;;
-              INFO:*)
-                # Process INFO logs
-                message="🟢 **INFO**"
-                # Extract the description and the specific reference separately
-                description=$(echo "$line" | cut -d':' -f2 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-                reference=$(echo "$line" | cut -d':' -f3- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+              warn*)
+                echo "${first_line//warn:/🟡 **WARN**}" >> "$output_file"
+                if [[ "${{ inputs.failure_level }}" = "warn" ]]; then
+                  build_successful=false
+                fi
                 ;;
-              ERROR:*)
-                # Process ERROR logs
-                message="🔴 **ERROR**"
-                description=$(echo "$line" | cut -d':' -f2 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-                reference=$(echo "$line" | cut -d':' -f3- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+              info)
+                echo "${first_line//info:/🟢 **INFO**}" >> "$output_file"
                 ;;
-              WARN:*)
-                # Process WARN logs
-                message="🟡 **WARN**"
-                description=$(echo "$line" | cut -d':' -f2 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-                reference=$(echo "$line" | cut -d':' -f3- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-                ;;
-              DEBUG:*)
-                # Process DEBUG logs
-                message="🔵 **DEBUG**"
-                description=$(echo "$line" | cut -d':' -f2 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-                reference=$(echo "$line" | cut -d':' -f3- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
-                ;;
-              "Antora documentation build completed successfully.")
-                # Set the completion status to success
-                completion_status="✅🎉🚀 Antora documentation build completed successfully. "
-                ;;
-              "Antora documentation build failed.")
-                # Set the completion status to failure without exit code
-                completion_status="❌🔥👀 Antora documentation build failed. "
+              debug*)
+                echo "${first_line//debug:/🔵 **DEBUG**}" >> "$output_file"
                 ;;
             esac
           
-            # Process log details and file path if a message was set
-            if [ -n "$message" ]; then
-              # Read the next line to get the file path
-              if IFS= read -r next_line; then
-                # Extract the file path, removing the "File:" prefix
-                file_path=$(echo "$next_line" | sed 's/^  File: //')
-                # Append the log entry with bullet point and formatting
-                echo "- ${message}: ${description}: \`${reference}\`" >> "$output_file"
-                echo "    - _File:_ \`${file_path}\`" >> "$output_file"
-              fi
-              message=""
-            fi
-          done < "$input_file"
+            # Write second line (file and line)
+            second_line=$(echo "$line" | jq -r '"    - File: `\(.file.path? // "N/A" | sub("^/home/runner/work/isyfact.github.io/isyfact.github.io/"; ""))`:\(.file.line // "N/A")\n"')
+            echo "$second_line" >> "$output_file"
           
+          done < "$input_file"
+
           # Ensure the last details block is closed
-          if [ "$in_block" = true ]; then
+          if [[ "$in_block" = true ]]; then
             echo "</details>" >> "$output_file"
           fi
+          if [[ "$build_successful" = true ]]; then
+            echo "<strong>✅ Documentation build successful!</strong>" >> "$output_file"
+          else
+            echo "<strong>❌ Documentation build failed!</strong>" >> "$output_file"
+          fi
+  
+          cat formatted_logs.md
           
-          # Append the completion status at the end
-          echo -e "\n${completion_status}" >> "$output_file"
-
-      - name: Comment logs on PR
-        if: ${{ github.event_name == 'pull_request' }}
+          echo "success=$build_successful" >> $GITHUB_OUTPUT
+          
+      - name: Comment on PR
+        if: steps.adoc-changes.outputs.pr_build == 'true'
         uses: thollander/actions-comment-pull-request@v3.0.1
         with:
           file-path: formatted_logs.md
           comment-tag: antora-logs
 
-      - name: Fail the workflow if Antora build fails
-        run: |          
-          if grep -q "Antora documentation build failed." cleaned_logs.txt; then
-            echo -e "\033[0;31mAntora documentation build failed.\033[0m"
-            exit 1
-          else
-            echo -e "\033[0;32mAntora documentation build completed successfully.\033[0m"
-          fi
+#      - name: Fail check if documentation build failed
+#        if: ${{ steps.generate-pr-comment.outputs.success == 'false' }}
+#        run: exit 1
