@@ -34,7 +34,7 @@ jobs:
         continue-on-error: true
         run: |
           git fetch origin ${{ github.base_ref }}
-          if git diff --name-only origin/${{ github.base_ref }}...HEAD) | grep -q ".adoc"; then
+          if git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -q ".adoc"; then
             echo "pr_build=true" >> $GITHUB_OUTPUT
           else
             echo "pr_build=false" >> $GITHUB_OUTPUT
