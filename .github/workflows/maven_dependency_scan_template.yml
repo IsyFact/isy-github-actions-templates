@@ -144,12 +144,14 @@ jobs:
       - name: Run Snyk task
         run: |
           if [ "${{ inputs.perform-scan }}" = "true" ]; then
-            snyk test ${{ inputs.snyk-arguments }} \
+            snyk test \
               --severity-threshold=${{ inputs.severity-threshold }} \
               --target-reference=${{ inputs.snyk-reference }} \
-              --org=${{ inputs.snyk-organization }}
+              --org=${{ inputs.snyk-organization }} \
+              ${{ inputs.snyk-arguments }}
           else
-            snyk monitor ${{ inputs.snyk-arguments }} \
+            snyk monitor \
               --target-reference=${{ inputs.snyk-reference }} \
-              --org=${{ inputs.snyk-organization }}
+              --org=${{ inputs.snyk-organization }} \
+              ${{ inputs.snyk-arguments }}
           fi
