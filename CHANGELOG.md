@@ -1,4 +1,4 @@
-# 2.1.1
+# 2.1.2
 
 ### Bug Fixes
-* `IFS-4898`: Aufrufe von snyk wurden angepasst, um Maven-Argumente korrekt zu übergeben.
+* `IFS-5006`: Hinzufügen von git-commit-id-maven-plugin zur Whitelist
