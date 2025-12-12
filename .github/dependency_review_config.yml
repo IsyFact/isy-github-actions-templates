@@ -84,3 +84,4 @@ allow_licenses:
   - 'Zend-2.0'
   - 'Zlib'
   - 'zlib-acknowledgement'
+  - 'pkg:maven/io.github.git-commit-id/git-commit-id-maven-plugin'
