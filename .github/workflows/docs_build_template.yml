@@ -51,7 +51,7 @@ jobs:
         if: github.event_name == 'push' || steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
         with:
           token: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
-          ref: main
+          ref: feature/ifs-4802-playbook-pr-build
           repo: isyfact.github.io
           owner: IsyFact
           workflow: antora_build.yml
