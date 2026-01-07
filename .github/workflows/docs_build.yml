@@ -10,6 +10,6 @@ on:
 jobs:
   Build:
     # use a fixed release instead of "main" for a stable pipeline
-    uses: IsyFact/isy-github-actions-templates/.github/workflows/docs_build_template.yml@main
+    uses: IsyFact/isy-github-actions-templates/.github/workflows/docs_build_template.yml@feature/ifs-4802-playbook-pr-build
     secrets:
       ANTORA_TRIGGER_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
