@@ -1,4 +1,4 @@
-# 2.1.1
+# 2.2.0
 
-### Bug Fixes
-* `IFS-4898`: Aufrufe von snyk wurden angepasst, um Maven-Argumente korrekt zu übergeben.
+### Features
+* `IFS-5202`: LicenseRef-scancode-public-domain zu den Lizenzklassifizierungen und der Dependency-Review-Konfiguration hinzugefügt
