@@ -2,6 +2,8 @@
 # https://opensource.google/documentation/reference/thirdparty/licenses
 # https://spdx.org/licenses/
 allow_licenses:
+  # Public Domain license
+  - 'LicenseRef-scancode-public-domain'
   # Unencumbered: Licenses that declare the code is "free for any use".
   - '0BSD'
   - 'CC0-1.0'

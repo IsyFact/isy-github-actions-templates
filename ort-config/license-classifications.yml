@@ -242,3 +242,6 @@ categorizations:
   - id: "zlib-acknowledgement"
     categories:
       - "permissive"
+  - id: "LicenseRef-scancode-public-domain"
+    categories:
+      - "permissive"
