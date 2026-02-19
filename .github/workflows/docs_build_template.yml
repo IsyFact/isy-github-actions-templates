@@ -108,6 +108,10 @@ jobs:
                     
           while IFS= read -r line; do
           
+            if [[ $line != {* ]]; then
+              continue
+            fi
+          
             level=$(echo "$line" | jq -r '.level')
           
             if [[ "$level" = "fatal" ]]; then
