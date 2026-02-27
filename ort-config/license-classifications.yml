@@ -245,3 +245,15 @@ categorizations:
   - id: "LicenseRef-scancode-public-domain"
     categories:
       - "permissive"
+  - id: "EPL-1.0"
+    categories:
+      - "permissive"
+  - id: "EPL-2.0"
+    categories:
+      - "permissive"
+  - id: "LicenseRef-scancode-unknown-license-reference"
+    categories:
+      - "permissive"
+  - id: "LGPL-2.1-only"
+    categories:
+      - "permissive"

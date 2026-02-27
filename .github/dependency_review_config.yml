@@ -86,3 +86,7 @@ allow_licenses:
   - 'Zend-2.0'
   - 'Zlib'
   - 'zlib-acknowledgement'
+  - 'EPL-1.0'
+  - 'EPL-2.0'
+  - 'LicenseRef-scancode-unknown-license-reference'
+  - 'LGPL-2.1-only'
