@@ -170,7 +170,7 @@ Es ist aktuell für die Erstellung von Release-Dokumentation und zum Kommentiere
 *Auslösen der Dokumentationserstellung*:
 Der Workflow löst den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` unter Verwendung der GitHub CLI aus.
 Er wartet, bis der ausgelöste Build abgeschlossen ist.
-Wenn der Wokflow durch einen Pull Request gestartet wurde, verarbeitet er das als Artefakt veröffentlichte Antora-Log und bereitet es im Markdown-Format auf, um eine Übersicht des Builds und relevanter Log-Einträge als PR-Kommentar zu veröffentlichen.
+Wenn der Workflow durch einen Pull Request gestartet wurde, verarbeitet er das als Artefakt veröffentlichte Antora-Log und bereitet es im Markdown-Format auf, um eine Übersicht des Builds und relevanter Log-Einträge als PR-Kommentar zu veröffentlichen.
 
 *Anpassbares Logging*:
 Der Workflow ermöglicht es, das Logging des Antora-Builds zu steuern:
@@ -178,8 +178,9 @@ Der Workflow ermöglicht es, das Logging des Antora-Builds zu steuern:
 - Parameter `log_level`: Spezifiziert den Schweregrad, ab dem eine Nachricht ins Log geschrieben wird. Weitere Details: https://docs.antora.org/antora/latest/playbook/runtime-log-level/[Antora: Log Severity Level].
 - Parameter `failure_level` : Spezifiziert den Schweregrad, ab dem der Antora-Build mit einem Fehlercode (Rückgabewert ungleich 0) antwortet. Weitere Details: https://docs.antora.org/antora/latest/playbook/runtime-log-failure-level/[Antora: Log Failure Level].
 
-//*Fehlerbehandlung*:
-//Wenn der Antora-Build fehlschlägt, ist der Workflow so konzipiert, dass er ebenfalls fehlschlägt, um sicherzustellen, dass alle Probleme sofort gekennzeichnet werden.
+*Fehlerbehandlung*:
+Wenn der Antora-Build fehlschlägt (s. Parameter `failure_level`), schlägt der Workflow ebenfalls fehl.
+Wenn der Workflow durch einen Pull Request gestartet wurde, kann das Repository so konfiguriert werden, dass ein fehlschlagender Antora-Build den Merge blockiert.
 
 ==== Parameter
 [options="header"]

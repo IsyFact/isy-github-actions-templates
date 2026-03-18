@@ -206,6 +206,6 @@ jobs:
           file-path: formatted_logs.md
           comment-tag: antora-logs
 
-#      - name: Fail check if documentation build failed
-#        if: ${{ steps.generate-pr-comment.outputs.success == 'false' }}
-#        run: exit 1
+      - name: Fail check if documentation build failed
+        if: ${{ steps.generate-pr-comment.outputs.success == 'false' }}
+        run: exit 1
