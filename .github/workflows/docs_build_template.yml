@@ -51,7 +51,7 @@ jobs:
         if: github.event_name == 'push' || steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
         with:
           token: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
-          ref: main
+          ref: feature/ifs-5360-analyze-diagrams
           repo: isyfact.github.io
           owner: IsyFact
           workflow: antora_build.yml
@@ -87,7 +87,7 @@ jobs:
           echo "Fetching Antora log for run ID: $RUN_ID from repository IsyFact/isyfact.github.io..."
           gh run download ${{ env.RUN_ID }} -n "antora-log" --repo "IsyFact/isyfact.github.io"
 
-      - name: Generate PR comment
+      - name: Generate comment for documentation build results
         id: generate-pr-comment
         if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
         run: |
@@ -199,13 +199,61 @@ jobs:
           
           echo "success=$build_successful" >> $GITHUB_OUTPUT
           
-      - name: Comment on PR
+      - name: Comment on PR for documentation build results
         if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
         uses: thollander/actions-comment-pull-request@v3.0.1
         with:
           file-path: formatted_logs.md
           comment-tag: antora-logs
 
+      - name: Fetch diagram log
+        if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
+          RUN_ID: ${{ steps.trigger_build.outputs.run_id }}
+        run: |
+          # Fetch the logs for the given run ID using GitHub CLI
+          echo "Fetching diagram log for run ID: $RUN_ID from repository IsyFact/isyfact.github.io..."
+          gh run download ${{ env.RUN_ID }} -n "diagram-log" --repo "IsyFact/isyfact.github.io"
+
+      - name: Generate comment for disabled dark mode support in diagrams
+        id: generate-pr-comment-dark-mode
+        if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
+        run: |
+          echo "Processing diagram log..."
+          
+          input_file="diagrams_with_enabled_adaptive_colors.log"
+          output_file="diagrams_check_result.md"
+          
+          echo "## Diagram Check 📊" > "$output_file"
+          echo "### Adaptive Color Support Turned Off" >> "$output_file"
+
+          # Keep track of the build success, according to the failure_level (workflow input) 
+          build_successful=true
+
+          while IFS= read -r line; do
+
+            echo "- 🔴 **ERROR** diagram with adaptive colors and support turned on" >> "$output_file"
+            echo "    - File: $line" >> "$output_file"
+  
+            if [[ "${{ inputs.failure_level }}" = "error" || "${{ inputs.failure_level }}" = "warn" ]]; then
+              build_successful=false
+            fi
+          
+          done < "$input_file"
+
+          cat diagrams_check_result.md
+
+          echo "success=$build_successful" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR for disabled dark mode support in diagrams
+        if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
+        uses: thollander/actions-comment-pull-request@v3.0.1
+        with:
+          file-path: diagrams_check_result.md
+          comment-tag: diagrams-check-result
+
       - name: Fail check if documentation build failed
         if: ${{ steps.generate-pr-comment.outputs.success == 'false' }}
+
         run: exit 1
