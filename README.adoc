@@ -172,6 +172,10 @@ Der Workflow löst den Workflow `antora_build.yml` im Repository `IsyFact/isyfac
 Er wartet, bis der ausgelöste Build abgeschlossen ist.
 Wenn der Workflow durch einen Pull Request gestartet wurde, verarbeitet er das als Artefakt veröffentlichte Antora-Log und bereitet es im Markdown-Format auf, um eine Übersicht des Builds und relevanter Log-Einträge als PR-Kommentar zu veröffentlichen.
 
+*Prüfung der Diagramme (draw.io)*:
+Der Workflow prüft, ob Diagramme im SVG-Format den Anforderungen der Online-Dokumentation genügen.
+Aktuell prüft der Workflow, ob die Diagramme adaptive Farben verwenden, da diese in der Online-Dokumentation nicht korrekt dargestellt werden können. Weiter Erläuterungen hierzu finden sich im https://isyfact.github.io/docs/documentation-guide/current/seitenbearbeitung.html#draw.io[Leitfaden Dokumentation].
+
 *Anpassbares Logging*:
 Der Workflow ermöglicht es, das Logging des Antora-Builds zu steuern:
 

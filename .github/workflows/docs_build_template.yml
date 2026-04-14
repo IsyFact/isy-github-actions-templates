@@ -87,7 +87,7 @@ jobs:
           echo "Fetching Antora log for run ID: $RUN_ID from repository IsyFact/isyfact.github.io..."
           gh run download ${{ env.RUN_ID }} -n "antora-log" --repo "IsyFact/isyfact.github.io"
 
-      - name: Generate PR comment
+      - name: Generate comment for documentation build results
         id: generate-pr-comment
         if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
         run: |
@@ -199,13 +199,115 @@ jobs:
           
           echo "success=$build_successful" >> $GITHUB_OUTPUT
           
-      - name: Comment on PR
+      - name: Comment on PR for documentation build results
         if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
         uses: thollander/actions-comment-pull-request@v3.0.1
         with:
           file-path: formatted_logs.md
           comment-tag: antora-logs
 
+      - name: Fetch diagram log
+        if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
+          RUN_ID: ${{ steps.trigger_build.outputs.run_id }}
+        run: |
+          # Fetch the logs for the given run ID using GitHub CLI
+          echo "Fetching diagram log for run ID: $RUN_ID from repository IsyFact/isyfact.github.io..."
+          gh run download ${{ env.RUN_ID }} -n "diagram-log" --repo "IsyFact/isyfact.github.io"
+
+      - name: Generate comment for disabled dark mode support in diagrams
+        id: generate-pr-comment-dark-mode
+        if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
+        run: |
+          echo "Processing diagram log..."
+          
+          input_file="diagrams_with_enabled_adaptive_colors.log"
+          output_file="diagrams_check_result.md"
+          
+          echo "## Diagram Check 📊" > "$output_file"
+          echo "### Adaptive Color Support Turned Off" >> "$output_file"
+          echo "How to turn off adaptive color support for a diagram is described in the [documentation guide](https://isyfact.github.io/docs/documentation-guide/current/seitenbearbeitung.html#draw.io)." >> "$output_file"
+          
+          # Keep track of the current source and branch
+          current_source=""
+          current_branch=""
+          # Keep track of the block state
+          in_block=false
+          # Keep track of the build success, according to the failure_level (workflow input)
+          build_successful=true
+          
+          while IFS= read -r line; do
+        
+            # Extract the source information (content sources using Antora cache)
+            source=$(echo "$line" | sed -E 's|.*/content-with-lfs/([^/]+)-[0-9a-f]{40}/.*|\1|')
+        
+            if [[ "$source" == "$line" ]]; then
+              # Special case for isyfact-standards
+              source=$(echo "$line" | sed -E 's|^\./?([^/]+)/.*|\1|')
+            fi
+            # If the previous attempts didn't match anything, skip this line
+            if [[ "$source" == "$line" ]]; then
+              echo "::notice title=Skipping line: $line"
+              continue
+            fi
+        
+            # Extract the branch from the source.
+            branch=$(echo "$source" | sed -E 's/.*-([^ -]+)$/\1/')
+          
+            if [[ "$branch" == "standards" ]]; then
+              # Special case for isyfact-standards (master)
+              branch="master"
+            else
+              # All other cases: cut branch from source
+              source="${source%-"${branch}"}"
+            fi
+          
+            # Check if the source or branch has changed
+            if [[ "$source" != "$current_source" || "$branch" != "$current_branch" ]]; then
+              # Update the current source and branch
+              current_source="$source"
+              current_branch="$branch"
+              
+              # Close previous details block if it's not the first one
+              if [[ "$in_block" = true ]]; then
+                echo "</details>" >> "$output_file"
+              fi
+              # Start a new details block for a new source
+              echo "<details>" >> "$output_file"
+              echo "<summary><strong>📁 Content Source: $current_source (branch: $current_branch)</strong></summary>" >> "$output_file"
+              echo "" >> "$output_file"  # Add a new line for formatting
+              in_block=true
+            fi
+          
+            echo "- 🔴 **ERROR** diagram with adaptive colors and support turned on" >> "$output_file"
+          
+            # Extract the path inside the repository
+            short_line=$(echo "$line" | sed -E 's|.*/content-with-lfs/[^/]+-[0-9a-f]{40}(/.*)|\1|')
+            # Special case for isyfact-standards
+            if [[ "$short_line" == "$line" ]]; then
+              short_line=$(echo "$line" | sed -E 's|^\./?[^/]+(/.*)|\1|')
+            fi
+            echo "    - File: $short_line" >> "$output_file"
+          
+            if [[ "${{ inputs.failure_level }}" = "error" || "${{ inputs.failure_level }}" = "warn" ]]; then
+              build_successful=false
+            fi
+          
+          done < "$input_file"
+          
+          cat diagrams_check_result.md
+  
+          echo "success=$build_successful" >> $GITHUB_OUTPUT
+
+      - name: Comment on PR for disabled dark mode support in diagrams
+        if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
+        uses: thollander/actions-comment-pull-request@v3.0.1
+        with:
+          file-path: diagrams_check_result.md
+          comment-tag: diagrams-check-result
+
       - name: Fail check if documentation build failed
         if: ${{ steps.generate-pr-comment.outputs.success == 'false' }}
+
         run: exit 1
