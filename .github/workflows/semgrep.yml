@@ -1,0 +1,45 @@
+name: Semgrep Scan
+
+on:
+  workflow_call:
+
+jobs:
+  semgrep-scan:
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+
+    # Skip any PR created by dependabot to avoid permission issues
+    if: (github.actor != 'dependabot[bot]')
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Checkout template repository for config
+        uses: actions/checkout@v6
+        with:
+          repository: IsyFact/isy-github-actions-templates
+          ref: main
+          path: .isy-github-actions-templates
+          sparse-checkout: |
+            .github/config/semgrep
+
+      - name: Run semgrep version
+        run: |
+          semgrep --version
+
+      - name: Run semgrep scan on changed files
+        run: |
+          semgrep ci \
+            --config .isy-github-actions-templates/.github/config/semgrep \
+            --exclude ".isy-github-actions-templates/**" \
+            --json --output semgrep-report.json \
+            --metrics=off || export SEMGREP_EXIT=$?
+          exit $SEMGREP_EXIT
+
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: semgrep-report.json
+          path: semgrep-report.json
