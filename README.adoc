@@ -248,3 +248,22 @@ Die Datei `CHANGELOG.md` im jeweiligen Repository wird als Release Notes verwend
 
 Mithilfe des Templates `dependabot_auto_changelog_template.yml` wird automatisch ein Changelog-Eintrag in einem Dependabot Merge-Request erstellt.
 Dieser wird unter der Überschrift `Dependency Upgrades` zusammengefasst.
+
+=== Semgrep Template
+
+Das Template `semgrep.yml` führt einen Semgrep-Sicherheitsscan durch. Es nutzt das offizielle Semgrep-Container-Image und prüft den Code auf Sicherheitslücken und Best Practices.
+
+Das Template verwendet die Semgrep-Regeln aus dem Verzeichnis `.github/config/semgrep` dieses Repositories. Diese werden automatisch aus dem Template-Repository geladen, sodass keine lokale Kopie im aufrufenden Repository erforderlich ist.
+
+==== Nutzung
+[source,yaml]
+----
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  semgrep-scan:
+    uses: IsyFact/isy-github-actions-templates/.github/workflows/semgrep.yml@<version>
+----
