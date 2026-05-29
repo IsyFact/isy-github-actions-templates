@@ -86,117 +86,189 @@ jobs:
           # Fetch the logs for the given run ID using GitHub CLI
           echo "Fetching Antora log for run ID: $RUN_ID from repository IsyFact/isyfact.github.io..."
           gh run download ${{ env.RUN_ID }} -n "antora-log" --repo "IsyFact/isyfact.github.io"
+          mv antora_output.log antora_triggered_run.log
+
+      - name: Fetch Antora log for production (latest successful scheduled build)
+        if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
+        run: |
+          # Fetch the logs for the given run ID using GitHub CLI
+          echo "Fetching latest production log for run ID"
+          latest_run_id=$(gh run list --repo IsyFact/isyfact.github.io -w "Build Documentation" -s success -e schedule -L 1 --json databaseId -q ".[0].databaseId") 
+          gh run download $latest_run_id -n "antora-log" --repo "IsyFact/isyfact.github.io" 
+          mv antora_output.log antora_latest_run.log
+          cat antora_latest_run.log
+
+      - name: Compute fixed and introduced log messages
+        id: compute-pr-production-diff
+        if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
+        run: |
+          # Normalize the timestamp to 0 in each JSON line.
+          # Otherwise the timestamps cause `comm` to flag virtually every line as fixed or introduced.
+          normalize_time='s/"time":[0-9]+/"time":0/g'
+
+          grep '^{' antora_latest_run.log    | sed -E "$normalize_time" | LC_ALL=C sort -u > latest_sorted.log    || true
+          grep '^{' antora_triggered_run.log | sed -E "$normalize_time" | LC_ALL=C sort -u > triggered_sorted.log || true
+
+          comm -23 latest_sorted.log triggered_sorted.log > antora_fixed.log
+          comm -13 latest_sorted.log triggered_sorted.log > antora_introduced.log
+
+          echo "Fixed messages:      $(wc -l < antora_fixed.log)"
+          echo "Introduced messages: $(wc -l < antora_introduced.log)"
 
       - name: Generate comment for documentation build results
         id: generate-pr-comment
         if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
         run: |
-          echo "Processing Antora log..."
-          
-          input_file="antora_output.log"
-          output_file="formatted_logs.md"
-          
-          echo "## Build Documentation Logs 📜" > "$output_file"
-                    
-          # Keep track of the current source and branch
-          current_source=""
-          current_branch=""
-          # Keep track of the block state
-          in_block=false
-          # Keep track of the build success, according to the failure_level (workflow input) 
-          build_successful=true
-                    
-          while IFS= read -r line; do
-          
-            if [[ $line != {* ]]; then
-              continue
-            fi
-          
-            level=$(echo "$line" | jq -r '.level')
-          
-            if [[ "$level" = "fatal" ]]; then
-              line_text=$(echo "$line" | jq -r '"\(.level | ascii_upcase) \(.msg)"')
-              echo "<strong>❌ $line_text</strong>" >> "$output_file"
-              # fatal errors fail the build in each case
-              build_successful=false
-              continue
-            fi
-          
-            # Extract the source and branch information
-            source=$(echo "$line" | jq -r '.source.url // empty' | awk -F'/' '{print $NF}')
-            branch=$(echo "$line" | jq -r '.source.refname // empty')
-          
-            # Use the last part of the worktree if the ref points to HEAD (i.e. in case of a tag)
-            if [[ "$branch" = "HEAD" ]]; then
-              worktree=$(echo "$line" | jq -r '.source.worktree')
-              branch="${worktree##*/}"
-            fi
-          
-            # If the source or branch is missing, skip this line
-            if [[ -z "$source" || -z "$branch" ]]; then
-              echo "::notice title=Skipping line: $line"
-              continue
-            fi
-          
-            # Check if the source or branch has changed
-            if [[ "$source" != "$current_source" || "$branch" != "$current_branch" ]]; then
-              # Update the current source and branch
-              current_source="$source"
-              current_branch="$branch"
-          
-              # Close previous details block if it's not the first one
-              if [[ "$in_block" = true ]]; then
-                echo "</details>" >> "$output_file"
-              fi
-              # Start a new details block for a new source
-              echo "<details>" >> "$output_file"
-              echo "<summary><strong>📁 Content Source: $current_source (branch: $current_branch)</strong></summary>" >> "$output_file"
-              echo "" >> "$output_file"  # Add a new line for formatting
-              in_block=true
-            fi
-          
-            # Write first line (level and message)
-            first_line=$(echo "$line" | jq -r '"- \(.level): \(.msg)"')
-          
-            case "$level" in
-              error*)
-                echo "${first_line//error:/🔴 **ERROR**}" >> "$output_file"
-                if [[ "${{ inputs.failure_level }}" = "error" || "${{ inputs.failure_level }}" = "warn" ]]; then
-                  build_successful=false
-                fi
-                ;;
-              warn*)
-                echo "${first_line//warn:/🟡 **WARN**}" >> "$output_file"
-                if [[ "${{ inputs.failure_level }}" = "warn" ]]; then
-                  build_successful=false
-                fi
-                ;;
-              info)
-                echo "${first_line//info:/🟢 **INFO**}" >> "$output_file"
-                ;;
-              debug*)
-                echo "${first_line//debug:/🔵 **DEBUG**}" >> "$output_file"
-                ;;
-            esac
-          
-            # Write second line (file and line)
-            second_line=$(echo "$line" | jq -r '"    - File: `\(.file.path? // "N/A" | sub("^/home/runner/work/isyfact.github.io/isyfact.github.io/"; ""))`:\(.file.line // "N/A")\n"')
-            echo "$second_line" >> "$output_file"
-          
-          done < "$input_file"
+          echo "Processing Antora log diff..."
 
-          # Ensure the last details block is closed
-          if [[ "$in_block" = true ]]; then
-            echo "</details>" >> "$output_file"
-          fi
-          if [[ "$build_successful" = true ]]; then
-            echo "<strong>✅ Documentation build successful!</strong>" >> "$output_file"
-          else
-            echo "<strong>❌ Documentation build failed!</strong>" >> "$output_file"
-          fi
-  
-          cat formatted_logs.md
+          output_file="formatted_logs.md"
+          echo "## Build Documentation Logs 📜" > "$output_file"
+
+          # Keep track of the build success, according to the failure_level (workflow input).
+          # Only messages INTRODUCED by this PR may flip this flag to false.
+          build_successful=true
+
+          # Args: $1 = input file (JSON lines), $2 = section title, $3 = "true" if findings should fail the build
+          render_section() {
+            local input_file="$1"
+            local section_title="$2"
+            local fail_on_findings="$3"
+
+            echo "" >> "$output_file"
+            if [[ -n "$section_title" ]]; then
+              echo "### $section_title" >> "$output_file"
+            fi
+
+            local current_source=""
+            local current_branch=""
+            local in_block=false
+
+            while IFS= read -r line; do
+
+              if [[ $line != {* ]]; then
+                continue
+              fi
+
+              level=$(echo "$line" | jq -r '.level')
+
+              if [[ "$level" = "fatal" ]]; then
+                line_text=$(echo "$line" | jq -r '"\(.level | ascii_upcase) \(.msg)"')
+                if [[ "$in_block" = true ]]; then
+                  echo "</details>" >> "$output_file"
+                  in_block=false
+                fi
+                echo "<strong>❌ $line_text</strong>" >> "$output_file"
+                # fatal errors fail the build in each case (only when introduced)
+                if [[ "$fail_on_findings" = "true" ]]; then
+                  build_successful=false
+                fi
+                continue
+              fi
+
+              # Extract the source and branch information
+              source=$(echo "$line" | jq -r '.source.url // empty' | awk -F'/' '{print $NF}')
+              branch=$(echo "$line" | jq -r '.source.refname // empty')
+
+              # Use the last part of the worktree if the ref points to HEAD (i.e. in case of a tag)
+              if [[ "$branch" = "HEAD" ]]; then
+                worktree=$(echo "$line" | jq -r '.source.worktree')
+                branch="${worktree##*/}"
+              fi
+
+              # If the source or branch is missing, skip this line
+              if [[ -z "$source" || -z "$branch" ]]; then
+                echo "::notice title=Skipping line: $line"
+                continue
+              fi
+
+              # Check if the source or branch has changed
+              if [[ "$source" != "$current_source" || "$branch" != "$current_branch" ]]; then
+                current_source="$source"
+                current_branch="$branch"
+
+                if [[ "$in_block" = true ]]; then
+                  echo "</details>" >> "$output_file"
+                fi
+                echo "<details>" >> "$output_file"
+                echo "<summary><strong>📁 Content Source: $current_source (branch: $current_branch)</strong></summary>" >> "$output_file"
+                echo "" >> "$output_file"
+                in_block=true
+              fi
+
+              # Write first line (level and message)
+              first_line=$(echo "$line" | jq -r '"- \(.level): \(.msg)"')
+
+              case "$level" in
+                error*)
+                  echo "${first_line//error:/🔴 **ERROR**}" >> "$output_file"
+                  if [[ "$fail_on_findings" = "true" ]] && \
+                     [[ "${{ inputs.failure_level }}" = "error" || "${{ inputs.failure_level }}" = "warn" ]]; then
+                    build_successful=false
+                  fi
+                  ;;
+                warn*)
+                  echo "${first_line//warn:/🟡 **WARN**}" >> "$output_file"
+                  if [[ "$fail_on_findings" = "true" ]] && [[ "${{ inputs.failure_level }}" = "warn" ]]; then
+                    build_successful=false
+                  fi
+                  ;;
+                info)
+                  echo "${first_line//info:/🟢 **INFO**}" >> "$output_file"
+                  ;;
+                debug*)
+                  echo "${first_line//debug:/🔵 **DEBUG**}" >> "$output_file"
+                  ;;
+              esac
+
+              # Write second line (file and line)
+              second_line=$(echo "$line" | jq -r '"    - File: `\(.file.path? // "N/A" | sub("^/home/runner/work/isyfact.github.io/isyfact.github.io/"; ""))`:\(.file.line // "N/A")\n"')
+              echo "$second_line" >> "$output_file"
+
+            done < "$input_file"
+
+            if [[ "$in_block" = true ]]; then
+              echo "</details>" >> "$output_file"
+            fi
           
+            if [[ "$current_source" = "" ]]; then
+              echo "None." >> "$output_file"
+              return
+            fi
+
+
+          }
+
+          # Sort the diff outputs by source/branch so the section grouping works as before.
+          sort_by_source() {
+            local f="$1"
+            [[ -s "$f" ]] || return 0
+            jq -c '[(.source.url // ""), (.source.refname // ""), .]' "$f" \
+              | LC_ALL=C sort -u \
+              | jq -c '.[2]' > "$f.sorted"
+            mv "$f.sorted" "$f"
+          }
+
+          sort_by_source antora_fixed.log
+          sort_by_source antora_introduced.log
+          sort_by_source triggered_sorted.log
+
+          render_section "antora_fixed.log" "✅ Fixed by this PR" "false"
+          render_section "antora_introduced.log" "⚠️ Introduced by this PR" "true"
+
+          echo "### ℹ️ Complete Log" >> "$output_file"
+          echo "<details>" >> "$output_file"
+          echo "<summary><strong>Log messages by content source</strong></summary>" >> "$output_file"
+          if [[ "$build_successful" = true ]]; then
+            render_section "triggered_sorted.log" "" "false"
+          else
+            render_section "triggered_sorted.log" "" "false"
+          fi
+          echo "</details>" >> "$output_file"
+
+          cat formatted_logs.md
+
           echo "success=$build_successful" >> $GITHUB_OUTPUT
           
       - name: Comment on PR for documentation build results
@@ -227,7 +299,7 @@ jobs:
           
           echo "## Diagram Check 📊" > "$output_file"
           echo "### Adaptive Color Support Turned Off" >> "$output_file"
-          echo "How to turn off adaptive color support for a diagram is described in the [documentation guide](https://isyfact.github.io/docs/documentation-guide/current/seitenbearbeitung.html#draw.io)." >> "$output_file"
+          echo "How to turn off adaptive color support for a diagram is described in the [documentation guide](https://isyfact.github.io/documentation-guide/current/seitenbearbeitung.html#draw.io)." >> "$output_file"
           
           # Keep track of the current source and branch
           current_source=""

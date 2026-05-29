@@ -170,7 +170,8 @@ Es ist aktuell für die Erstellung von Release-Dokumentation und zum Kommentiere
 *Auslösen der Dokumentationserstellung*:
 Der Workflow löst den Workflow `antora_build.yml` im Repository `IsyFact/isyfact.github.io` unter Verwendung der GitHub CLI aus.
 Er wartet, bis der ausgelöste Build abgeschlossen ist.
-Wenn der Workflow durch einen Pull Request gestartet wurde, verarbeitet er das als Artefakt veröffentlichte Antora-Log und bereitet es im Markdown-Format auf, um eine Übersicht des Builds und relevanter Log-Einträge als PR-Kommentar zu veröffentlichen.
+Wenn der Workflow durch einen Pull Request gestartet wurde, verarbeitet er das als Artefakt veröffentlichte Antora-Log gegen den letzten Build der produktiven Online-Dokumentation und bereitet eine Übersicht der behobenen (fixed) und neu hinzugekommenen (introduced) Log-Einträge auf.
+Zusammen mit einer allgemeinen Übersicht des Builds und relevanter Log-Einträge veröffentlicht der Workflow das Ergebnis als Kommentar am Pull Request.
 
 *Prüfung der Diagramme (draw.io)*:
 Der Workflow prüft, ob Diagramme im SVG-Format den Anforderungen der Online-Dokumentation genügen.
