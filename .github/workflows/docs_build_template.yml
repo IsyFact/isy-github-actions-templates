@@ -74,8 +74,8 @@ jobs:
           repo: isyfact.github.io
           owner: IsyFact
           run_id: ${{ steps.trigger_build.outputs.run_id }}
-          run_timeout_seconds: 900 # 15 minutes (optional)
-          poll_interval_ms: 15000 # 15 seconds (optional)
+          run_timeout_seconds: 1200 # 20 minutes (optional)
+          poll_interval_ms: 30000 # 30 seconds (optional)
 
       - name: Fetch Antora log
         if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
