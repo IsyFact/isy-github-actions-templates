@@ -1,4 +1,4 @@
-# 2.5.0
+# 2.6.0
 
 ### Features
 * `IFS-4803`: PR-Doku-Build: Darstellung der Differenz zwischen produktivem Build und eigenem Buildergebnis
