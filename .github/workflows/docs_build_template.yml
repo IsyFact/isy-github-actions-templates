@@ -243,7 +243,6 @@ jobs:
           
             if [[ "$current_source" = "" ]]; then
               echo "None." >> "$output_file"
-              echo "" >> "$output_file"
               return
             fi
 
@@ -265,12 +264,7 @@ jobs:
 
           render_section "antora_fixed.log" "✅ Fixed by this PR" "false"
           render_section "antora_introduced.log" "⚠️ Introduced by this PR" "true"
-
-          echo "### ℹ️ Complete Log" >> "$output_file"
-          echo "<details>" >> "$output_file"
-          echo "<summary><strong>Log messages by content source</strong></summary>" >> "$output_file"
-          render_section "triggered_sorted.log" "" "false"
-          echo "</details>" >> "$output_file"
+          render_section "triggered_sorted.log" "ℹ️ All build messages" "false"
 
           cat formatted_logs.md
 
