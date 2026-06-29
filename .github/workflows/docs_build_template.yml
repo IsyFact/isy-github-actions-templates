@@ -88,17 +88,26 @@ jobs:
           gh run download ${{ env.RUN_ID }} -n "antora-log" --repo "IsyFact/isyfact.github.io"
           mv antora_output.log antora_triggered_run.log
 
-      - name: Fetch Antora log for production (latest successful scheduled build)
+      - name: Fetch Antora log for latest productive build
         if: steps.adoc-changes.outputs.pr_build == 'true' || steps.meta-changes.outputs.pr_build == 'true'
         env:
           GH_TOKEN: ${{ secrets.ANTORA_TRIGGER_TOKEN }}
         run: |
           # Fetch the logs for the given run ID using GitHub CLI
-          echo "Fetching latest production log for run ID"
-          latest_run_id=$(gh run list --repo IsyFact/isyfact.github.io -w "Build Documentation" -s success -e schedule -L 1 --json databaseId -q ".[0].databaseId") 
-          gh run download $latest_run_id -n "antora-log" --repo "IsyFact/isyfact.github.io" 
+          latest_run_id_schedule=$(gh run list --repo IsyFact/isyfact.github.io -w "Build Documentation" -s success -e schedule -L 1 --json databaseId -q ".[0].databaseId") 
+          latest_run_id_push=$(gh run list --repo IsyFact/isyfact.github.io -w "Build Documentation" -s success -e push -L 1 --json databaseId -q ".[0].databaseId") 
+          echo "Run ID (schedule): $latest_run_id_schedule"
+          echo "Run ID (push): $latest_run_id_push"
+  
+          if (( latest_run_id_schedule > latest_run_id_push )); then
+            echo "Fetching latest production log for run ID $latest_run_id_schedule"
+            gh run download $latest_run_id_schedule -n "antora-log" --repo "IsyFact/isyfact.github.io" 
+          else
+            echo "Fetching latest production log for run ID $latest_run_id_push"
+            gh run download $latest_run_id_push -n "antora-log" --repo "IsyFact/isyfact.github.io" 
+          fi
+    
           mv antora_output.log antora_latest_run.log
-          cat antora_latest_run.log
 
       - name: Compute fixed and introduced log messages
         id: compute-pr-production-diff
@@ -237,7 +246,6 @@ jobs:
               return
             fi
 
-
           }
 
           # Sort the diff outputs by source/branch so the section grouping works as before.
@@ -256,16 +264,7 @@ jobs:
 
           render_section "antora_fixed.log" "✅ Fixed by this PR" "false"
           render_section "antora_introduced.log" "⚠️ Introduced by this PR" "true"
-
-          echo "### ℹ️ Complete Log" >> "$output_file"
-          echo "<details>" >> "$output_file"
-          echo "<summary><strong>Log messages by content source</strong></summary>" >> "$output_file"
-          if [[ "$build_successful" = true ]]; then
-            render_section "triggered_sorted.log" "" "false"
-          else
-            render_section "triggered_sorted.log" "" "false"
-          fi
-          echo "</details>" >> "$output_file"
+          render_section "triggered_sorted.log" "ℹ️ All build messages" "false"
 
           cat formatted_logs.md
 
