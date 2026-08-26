@@ -8,16 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      actions: none
-      checks: none
-      deployments: none
-      issues: none
-      packages: none
-      pages: none
-      pull-requests: none
-      repository-projects: none
-      security-events: none
-      statuses: none
     steps:
       - name: Check Commit Message
         uses: gsactions/commit-message-checker@v2.0.0
