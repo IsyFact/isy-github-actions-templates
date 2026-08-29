@@ -31,7 +31,7 @@ jobs:
             --mount type=bind,source=${{ github.workspace }},target=/home/ort/.ort/config/
           report-formats: WebApp,StaticHtml,HtmlTemplate -O HtmlTemplate=template.path=/home/ort/.ort/templates/cve_summary_report_template.ftl
       - name: Download workflow artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           path: ort-reports
       - name: Move report to correct directory
