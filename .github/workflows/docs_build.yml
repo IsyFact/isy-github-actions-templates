@@ -9,6 +9,9 @@ on:
 
 jobs:
   Build:
+    permissions:
+      contents: read
+      pull-requests: write
     # use a fixed release instead of "main" for a stable pipeline
     uses: IsyFact/isy-github-actions-templates/.github/workflows/docs_build_template.yml@main
     secrets:
