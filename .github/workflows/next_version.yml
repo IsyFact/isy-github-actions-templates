@@ -21,17 +21,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      actions: none
-      checks: none
-      deployments: none
-      issues: none
-      packages: none
-      pages: none
-      pull-requests: none
-      repository-projects: none
-      security-events: none
-      statuses: none
-
     outputs:
       next-version: ${{ steps.set-version.outputs.version }}
     steps:
