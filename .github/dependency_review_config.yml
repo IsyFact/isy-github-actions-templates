@@ -90,3 +90,5 @@ allow_licenses:
   - 'EPL-2.0'
   - 'LicenseRef-scancode-unknown-license-reference'
   - 'LGPL-2.1-only'
+allow-dependencies-licenses:
+  - 'pkg:maven/org.codehaus.mojo/flatten-maven-plugin'
