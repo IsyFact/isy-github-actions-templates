@@ -1,9 +1,9 @@
-# 3.0.0
+# 3.1.0
 
 ### Features
-* `IFS-5570`: PR-Doku-Build: Erkennung des letzten produktiven Build verbessern.
+* `IFS-5612`: Upgrade des Sonar Cloud Plugins auf Version 5.8.0.7211
 
 ### Breaking Change
-* `IFS-5682`: PR-Doku-Build an neues Branching-Modell anpassen.
+ -
 
 **Hinweis:** Alle Projekte, die an der Online-Dokumentation beteiligt sind, müssen zwingend auf dieses Release umsteigen!
