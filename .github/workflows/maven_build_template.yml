@@ -183,7 +183,7 @@ jobs:
           -Dsonar.host.url=${{ vars.SONAR_HOST_URL }}
           -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
           -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
-          verify org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar
+          verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.8.0.7211:sonar
       - name: Upload SonarCloud metadata
         uses: actions/upload-artifact@v4
         with:
